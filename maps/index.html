@@ -1,0 +1,66 @@
+<html>
+<head>
+  <title>Conservation Map -- Preliminary</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/esri-leaflet/3.0.10/esri-leaflet.js"></script>
+
+  <style>
+    #map{ width: 1000px; height: 600px; }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <script>
+
+  // initialize the map
+  var map = L.map('map').setView([43.835189, -72.252179], 12);
+
+  // load a tile layer 
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	subdomains: 'abcd',
+	maxZoom: 20
+    }).addTo(map);
+
+
+    // Add trails
+    var trailLinesURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_EMERGENCY_SP_NOCACHE_v1/MapServer/21/";
+    var trails = L.esri.featureLayer({
+        url: trailLinesURL,
+        style: function (feature) {
+            return {color: '#f49842',
+            weight: 1,
+            opacity: 0.8,};
+            }
+    });
+    trails.addTo(map);
+    
+    // Add Parcels
+    var parcelLinesURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/ArcGIS/rest/services/FS_VCGI_VTPARCELS_WM_NOCACHE_v2/FeatureServer/1/";
+    var parcels = L.esri.featureLayer({
+        url: parcelLinesURL,
+        style: function (feature) {
+            return {
+                    "color": '#999999',
+                    "fillColor": "none",
+                    "weight": 0.5,
+                    "opacity": 0.8
+          }}
+    });
+    parcels.setWhere("TOWN='THETFORD'");
+    parcels.addTo(map);
+
+    var mapOverlays = {
+    "Parcels": parcels,
+    "E911 Trails": trails,
+    };
+    
+    L.control.layers(null, mapOverlays, {position:'bottomright'}).addTo(map);
+
+  </script>
+</body>
+</html>
