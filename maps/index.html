@@ -5,7 +5,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/esri-leaflet/3.0.10/esri-leaflet.js"></script>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    
   <style>
     #map{ width: 1000px; height: 600px; }
   </style>
@@ -17,7 +18,7 @@
   <script>
 
   // initialize the map
-  var map = L.map('map').setView([43.835189, -72.252179], 12);
+  var map = L.map('map',{zoomControl: false}).setView([43.835189, -72.252179], 12);
 
   // load a tile layer 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
@@ -28,38 +29,124 @@
 
 
     // Add trails
-    var trailLinesURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_EMERGENCY_SP_NOCACHE_v1/MapServer/21/";
-    var trails = L.esri.featureLayer({
-        url: trailLinesURL,
-        style: function (feature) {
-            return {color: '#f49842',
-            weight: 1,
-            opacity: 0.8,};
-            }
-    });
-    trails.addTo(map);
+    // var trailLinesURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_EMERGENCY_SP_NOCACHE_v1/MapServer/21/";
+    // var trails = L.esri.featureLayer({
+    //     url: trailLinesURL,
+    //     style: function (feature) {
+    //         return {color: '#f49842',
+    //         weight: 1,
+    //         opacity: 0.8,};
+    //         }
+    // });
+    // trails.addTo(map);
     
+    // control that shows state info on hover
+	const info = L.control({'position':'topleft'});
+
+    info.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info');
+        this.update();
+        return this._div;
+    };
+
+    info.update = function (props) {
+        
+        var contents = 'Hover over a parcel for details.';
+        if(props){
+            contents  = `<b>${props.E911ADDR}</b></br>`;
+            contents += `Owner: ${props.OWNER1}`;
+            if(props.OWNER2){
+                contents += `, ${props.OWNER2}</br>`;
+            }else{
+                contents += `</br>`;
+            }
+            contents += `Owner Addr: ${props.ADDRGL1}, ${props.CITYGL} ${props.STGL} ${props.ZIPGL}</br>`;
+            contents += `SPAN: ${props.GLIST_SPAN}</br>`; 
+            contents += `ParcelNumber: ${props.PARCID}</br>`;
+            
+        }
+        this._div.innerHTML = `${contents}`;
+        this._div.style='background-color:rgba(256, 256, 256, 0.8);';
+    };
+
+    info.addTo(map);
+
     // Add Parcels
-    var parcelLinesURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/ArcGIS/rest/services/FS_VCGI_VTPARCELS_WM_NOCACHE_v2/FeatureServer/1/";
+    function style(feature) {
+		return {
+			weight: 1,
+			opacity: 0.8,
+			color: '#979797',
+			fillOpacity: 0.0,
+			fillColor: 'white'
+		};
+	}
+
+	function highlightFeature(e) {
+		const layer = e.target;
+
+		layer.setStyle({
+			weight: 2,
+			color: '#666',
+			fillOpacity: 0.7
+		});
+
+		layer.bringToFront();
+
+		info.update(layer.feature.properties);
+	}
+
+    var theLayer = L.geoJson(null);
+
+    var ptUrl = 'https://mparno.github.io/tcc-maps/maps/TestPoints.geojson';
+    $.getJSON(ptUrl, function(data) {
+        theLayer.addData(data);
+    });
+
+    theLayer.addTo(map);
+
+	/* global statesData */
+	// const geojson = L.geoJson(statesData, {
+	// 	style,
+	// 	onEachFeature
+	// }).addTo(map);
+    var parcelLinesURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_VTPARCELS_WM_NOCACHE_v2/FeatureServer/1";
     var parcels = L.esri.featureLayer({
         url: parcelLinesURL,
-        style: function (feature) {
-            return {
-                    "color": '#999999',
-                    "fillColor": "none",
-                    "weight": 0.5,
-                    "opacity": 0.8
-          }}
+        style: style,
+          onEachFeature: onEachFeature,
+          where:"TOWN='THETFORD'"
     });
-    parcels.setWhere("TOWN='THETFORD'");
-    parcels.addTo(map);
 
-    var mapOverlays = {
-    "Parcels": parcels,
-    "E911 Trails": trails,
-    };
+	function resetHighlight(e) {
+		parcels.resetStyle(e.target);
+		//info.update();
+	}
+
+	function zoomToFeature(e) {
+		map.fitBounds(e.target.getBounds());
+	}
+
+	function onEachFeature(feature, layer) {
+		layer.on({
+			mouseover: highlightFeature,
+			mouseout: resetHighlight,
+			click: zoomToFeature
+		});
+	}
     
-    L.control.layers(null, mapOverlays, {position:'bottomright'}).addTo(map);
+
+    parcels.addTo(map);
+    L.control.zoom({position: 'topright'}).addTo(map);
+    
+    // parcels.bringToFront();
+
+    // var mapOverlays = {
+    // "Parcels": parcels,
+    // "E911 Trails": trails,
+    // };
+    
+    // L.control.layers(null, mapOverlays, {position:'bottomright'}).addTo(map);
 
   </script>
 </body>
