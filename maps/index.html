@@ -51,18 +51,36 @@
 
     info.update = function (props) {
         
+        
         var contents = 'Hover over a parcel for details.';
         if(props){
-            contents  = `<b>${props.E911ADDR}</b></br>`;
-            contents += `Owner: ${props.OWNER1}`;
-            if(props.OWNER2){
-                contents += `, ${props.OWNER2}</br>`;
+            if(props.hasOwnProperty('PUBACCESS')){
+                contents  = `<b>Conserved Land</b></br>`;
+                contents += `Name: ${props.NAME}</br>`;
+                if(props.PUBACCESS==1){
+                    contents += `Type: Public Access</br>`;
+                }else if(props.PUBACCESS==2){
+                    contents += `Type: Privately Owned: easements allow limited public access</br>`;
+                }else if(props.PUBACCESS==3){
+                    contents += `Type: Privately Owned: no public access</br>`;
+                }else if(props.PUBACCESS==4){
+                    contents += `Type: Publicly Owned: access limited</br>`;
+                }else{
+                    contents += `Type/Access: Unknown</br>`;
+                }
+                contents += `Size: ${props.GISACRES} acres`;
             }else{
-                contents += `</br>`;
+                contents  = `<b>${props.E911ADDR}</b></br>`;
+                contents += `Owner: ${props.OWNER1}`;
+                if(props.OWNER2){
+                    contents += `, ${props.OWNER2}</br>`;
+                }else{
+                    contents += `</br>`;
+                }
+                contents += `Owner Addr: ${props.ADDRGL1}, ${props.CITYGL} ${props.STGL} ${props.ZIPGL}</br>`;
+                contents += `SPAN: ${props.GLIST_SPAN}</br>`; 
+                contents += `ParcelNumber: ${props.PARCID}</br>`;
             }
-            contents += `Owner Addr: ${props.ADDRGL1}, ${props.CITYGL} ${props.STGL} ${props.ZIPGL}</br>`;
-            contents += `SPAN: ${props.GLIST_SPAN}</br>`; 
-            contents += `ParcelNumber: ${props.PARCID}</br>`;
             
         }
         this._div.innerHTML = `${contents}`;
@@ -96,30 +114,87 @@
 		info.update(layer.feature.properties);
 	}
 
-    var theLayer = L.geoJson(null);
+    // var theLayer = L.geoJson(null);
 
-    var ptUrl = 'https://mparno.github.io/tcc-maps/maps/TestPoints.geojson';
-    $.getJSON(ptUrl, function(data) {
-        theLayer.addData(data);
-    });
+    // var ptUrl = 'https://mparno.github.io/tcc-maps/maps/TestPoints.geojson';
+    // $.getJSON(ptUrl, function(data) {
+    //     theLayer.addData(data);
+    // });
 
-    theLayer.addTo(map);
+    // theLayer.addTo(map);
 
-	/* global statesData */
-	// const geojson = L.geoJson(statesData, {
-	// 	style,
-	// 	onEachFeature
-	// }).addTo(map);
+    
     var parcelLinesURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_VTPARCELS_WM_NOCACHE_v2/FeatureServer/1";
     var parcels = L.esri.featureLayer({
         url: parcelLinesURL,
         style: style,
-          onEachFeature: onEachFeature,
-          where:"TOWN='THETFORD'"
+        onEachFeature: onEachFeature,
+        where:"TOWN='THETFORD'"
+    });
+
+    var townLinesURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_OPENDATA_Boundary_BNDHASH_line_SP_v1/FeatureServer/0";
+    var towns = L.esri.featureLayer({
+        url: townLinesURL,
+        style: {weight: 3,
+			opacity: 0.8,
+			color: '#979797'}
+    });
+
+    function conservedStyle(feature) {
+        // Metadata at https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_CADASTRAL_SP_NOCACHE_v1/MapServer/10
+        var color =  '#F1C40F';
+        var fillalpha = 0.2;
+        var edgealpha = 0.8;
+
+        if(feature.properties.PUBACCESS==1){
+            color = '#196F3D';
+            fillalpha = 0.2;
+            edgealpha = 0.8;
+        }else if(feature.properties.PUBACCESS==2){
+            color = '#148F77';
+            fillalpha = 0.2;
+            edgealpha = 0.8;
+        }else if(feature.properties.PUBACCESS==3){
+            color = '#21618C';
+            fillalpha = 0.2;
+            edgealpha = 0.8;
+        }else if(feature.properties.PUBACCESS==4){
+            color = '#B7950B';
+            fillalpha = 0.2;
+            edgealpha = 0.8;
+        }
+
+		return {
+			weight: 1,
+			opacity: edgealpha,
+			color: color,
+			fillOpacity: fillalpha,
+			fillColor: color
+		};
+	}
+
+    var conservedLandsURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_CADASTRAL_SP_NOCACHE_v1/MapServer/10";
+    var conservedLands = L.esri.featureLayer({
+        url: conservedLandsURL,
+        style: conservedStyle,
+        onEachFeature: onEachFeature,
+    });
+
+    var interiorBlockLinesURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/183";
+    var interiorBlocks = L.esri.featureLayer({
+        url: interiorBlockLinesURL,
+        style: {color:'#28B463', opacity: 0.2}
+    });
+
+    var connBlockLinesURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/182"
+    var connBlocks = L.esri.featureLayer({
+        url: connBlockLinesURL,
+        style: {color:'#73C6B6', opacity:0.2}
     });
 
 	function resetHighlight(e) {
 		parcels.resetStyle(e.target);
+        conservedLands.resetStyle(e.target);
 		//info.update();
 	}
 
@@ -135,18 +210,25 @@
 		});
 	}
     
+    //interiorBlocks.addTo(map);
+    //connBlocks.addTo(map);
+    //parcels.addTo(map);
+    towns.addTo(map);
+    conservedLands.addTo(map);
 
-    parcels.addTo(map);
     L.control.zoom({position: 'topright'}).addTo(map);
     
-    // parcels.bringToFront();
-
-    // var mapOverlays = {
-    // "Parcels": parcels,
-    // "E911 Trails": trails,
-    // };
+    parcels.bringToFront();
+    conservedLands.bringToFront();
     
-    // L.control.layers(null, mapOverlays, {position:'bottomright'}).addTo(map);
+    var mapOverlays = {
+    "Parcels": parcels,
+    "Protected Lands": conservedLands,
+    "Interior Forest Blocks": interiorBlocks,
+    "Connected Forest Blocks": connBlocks
+    };
+    
+    L.control.layers(null, mapOverlays, {position:'bottomright'}).addTo(map);
 
   </script>
 </body>
