@@ -68,8 +68,8 @@
                 }else{
                     contents += `Type/Access: Unknown</br>`;
                 }
-                contents += `Size: ${props.GISACRES} acres`;
-            }else{
+                contents += `Size: ${props.GISACRES.toFixed(1)} acres`;
+            }else if(props.hasOwnProperty('OWNER1')){
                 contents  = `<b>${props.E911ADDR}</b></br>`;
                 contents += `Owner: ${props.OWNER1}`;
                 if(props.OWNER2){
@@ -80,6 +80,11 @@
                 contents += `Owner Addr: ${props.ADDRGL1}, ${props.CITYGL} ${props.STGL} ${props.ZIPGL}</br>`;
                 contents += `SPAN: ${props.GLIST_SPAN}</br>`; 
                 contents += `ParcelNumber: ${props.PARCID}</br>`;
+            }else if(props.hasOwnProperty('PRIORITY')){
+                console.log(props);
+                contents  = `<b>${props.COMPDESC}</b></br>`;
+                contents += `Size: ${props.acres.toFixed(1)} acres</br>`;
+                contents += `Biophysical Region: ${props.biophysreg}</br>`;
             }
             
         }
@@ -146,6 +151,7 @@
         var fillalpha = 0.2;
         var edgealpha = 0.8;
 
+        // https://vcgi.vermont.gov/sites/vcgiupdate/files/doc_library/Protectedlands_Standard_v1.4.Final_.pdf
         if(feature.properties.PUBACCESS==1){
             color = '#196F3D';
             fillalpha = 0.2;
@@ -173,6 +179,13 @@
 		};
 	}
 
+    function interiorForestStyle(feature){
+        return {weight:1, color:'#28B463', opacity:0.8, fillOpacity:0.2, fillColor:'#28B463'};
+    }
+    function connForestStyle(feature){
+        return {weight:1, color:'#73C6B6', opacity:0.8, fillOpacity:0.2, fillColor:'#73C6B6'};
+    }
+
     var conservedLandsURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_CADASTRAL_SP_NOCACHE_v1/MapServer/10";
     var conservedLands = L.esri.featureLayer({
         url: conservedLandsURL,
@@ -183,18 +196,22 @@
     var interiorBlockLinesURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/183";
     var interiorBlocks = L.esri.featureLayer({
         url: interiorBlockLinesURL,
-        style: {color:'#28B463', opacity: 0.2}
+        style: interiorForestStyle,
+        onEachFeature: onEachFeature,
     });
 
     var connBlockLinesURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/182"
     var connBlocks = L.esri.featureLayer({
         url: connBlockLinesURL,
-        style: {color:'#73C6B6', opacity:0.2}
+        style: connForestStyle,
+        onEachFeature: onEachFeature,
     });
 
 	function resetHighlight(e) {
 		parcels.resetStyle(e.target);
         conservedLands.resetStyle(e.target);
+        interiorBlocks.resetStyle(e.target);
+        connBlocks.resetStyle(e.target);
 		//info.update();
 	}
 
