@@ -81,8 +81,11 @@
                 contents += `SPAN: ${props.GLIST_SPAN}</br>`; 
                 contents += `ParcelNumber: ${props.PARCID}</br>`;
             }else if(props.hasOwnProperty('PRIORITY')){
-                console.log(props);
-                contents  = `<b>${props.COMPDESC}</b></br>`;
+                if(props.hasOwnProperty('COMPDESC')){
+                    contents  = `<b>Highest Priority Interior Forest Block</b></br>`;
+                }else{
+                    contents  = `<b>Highest Priority Connected Forest Block</b></br>`;
+                }
                 contents += `Size: ${props.acres.toFixed(1)} acres</br>`;
                 contents += `Biophysical Region: ${props.biophysreg}</br>`;
             }
