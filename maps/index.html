@@ -88,6 +88,17 @@
                 }
                 contents += `Size: ${props.acres.toFixed(1)} acres</br>`;
                 contents += `Biophysical Region: ${props.biophysreg}</br>`;
+            }else if(props.hasOwnProperty('threatF1')){
+                contents  = `<b>Habitat Blocks and Wildlife Corridors</b></br>`;
+                contents += `Size: ${props.ACRES.toFixed(1)} acres</br>`;  
+                contents += `Score: ${props.Fwght}</br>`;  
+            }else if(props.hasOwnProperty('CATEGORY')){
+                contents  = `<b>Physical Landscape Diversity Blocks</b></br>`;
+                contents += `Category: ${props.CATEGORY}</br>`;
+            }else if(props.hasOwnProperty('DWAID')){
+                contents = `<b>Deer Wintering Area</b></br>`;
+                contents += `Rating: ${props.Rating}</br>`;
+                contents += `Size: ${props.Acres.toFixed(1)} acres</br>`;
             }
             
         }
@@ -188,6 +199,16 @@
     function connForestStyle(feature){
         return {weight:1, color:'#73C6B6', opacity:0.8, fillOpacity:0.2, fillColor:'#73C6B6'};
     }
+    function diversityBlockStyle(feature){
+        return {weight:1, color:'#5DADE2', opacity:0.8, fillOpacity:0.2, fillColor:'#5DADE2'};
+    }
+    function habitatBlockStyle(feature){
+        const colors = {1:'#F9EBEA', 2:'#F2D7D5', 3:'#E6B0AA', 4:'#D98880', 5:'#CD6155', 6:'#C0392B', 7:'#A93226', 8:'#922B21', 9:'#7B241C', 10:'#641E16'}
+        return {weight:1, color:colors[feature.properties.Fwghtrcl], opacity:0.8, fillOpacity:0.2, fillColor:colors[feature.properties.Fwghtrcl]};
+    }
+    function deerWinteringStyle(feature){
+        return {weight:1, color:'#A04000', opacity:0.8, fillOpacity:0.2, fillColor:'#A04000'};
+    }
 
     var conservedLandsURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_CADASTRAL_SP_NOCACHE_v1/MapServer/10";
     var conservedLands = L.esri.featureLayer({
@@ -210,11 +231,36 @@
         onEachFeature: onEachFeature,
     });
 
+    var diversityBlockURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/184";
+    var diversityBlocks = L.esri.featureLayer({
+        url: diversityBlockURL,
+        style: diversityBlockStyle,
+        onEachFeature: onEachFeature,
+    });
+
+    var habitatBlockURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/169";
+    var habitatBlocks = L.esri.featureLayer({
+        url: habitatBlockURL,
+        style: habitatBlockStyle,
+        onEachFeature: onEachFeature,
+    });
+
+    var deerWinteringURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/171";
+    var deerWintering = L.esri.featureLayer({
+        url: deerWinteringURL,
+        style: deerWinteringStyle,
+        onEachFeature: onEachFeature
+    })
+
+
 	function resetHighlight(e) {
 		parcels.resetStyle(e.target);
         conservedLands.resetStyle(e.target);
         interiorBlocks.resetStyle(e.target);
         connBlocks.resetStyle(e.target);
+        diversityBlocks.resetStyle(e.target);
+        habitatBlocks.resetStyle(e.target);
+        deerWintering.resetStyle(e.target);
 		//info.update();
 	}
 
@@ -245,7 +291,10 @@
     "Parcels": parcels,
     "Protected Lands": conservedLands,
     "Interior Forest Blocks": interiorBlocks,
-    "Connected Forest Blocks": connBlocks
+    "Connected Forest Blocks": connBlocks,
+    "Physical Landscape Diversity Blocks": diversityBlocks,
+    "Habitat Blocks and Wildlife Corridors" : habitatBlocks,
+    "Deer Wintering Areas" : deerWintering,
     };
     
     L.control.layers(null, mapOverlays, {position:'bottomright'}).addTo(map);
