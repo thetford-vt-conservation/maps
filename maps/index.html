@@ -27,6 +27,8 @@
 	maxZoom: 20
     }).addTo(map);
 
+    var imagery = L.esri.imageMapLayer({'url':"http://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/IMG_VCGI_CLR2022_WM_CACHE/ImageServer"});
+    var hillshade = L.esri.imageMapLayer({'url':"http://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/IMG_VCGI_LIDARHILLSHD_WM_CACHE_v1/ImageServer"});
 
     // Add trails
     // var trailLinesURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_EMERGENCY_SP_NOCACHE_v1/MapServer/21/";
@@ -295,6 +297,8 @@
     "Physical Landscape Diversity Blocks": diversityBlocks,
     "Habitat Blocks and Wildlife Corridors" : habitatBlocks,
     "Deer Wintering Areas" : deerWintering,
+    "2022 Imagery" : imagery,
+    "Hillshade" : hillshade,
     };
     
     L.control.layers(null, mapOverlays, {position:'bottomright'}).addTo(map);
