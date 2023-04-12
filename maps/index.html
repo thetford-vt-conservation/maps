@@ -1,17 +1,51 @@
 <html>
 <head>
   <title>Conservation Map -- Preliminary</title>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/esri-leaflet/3.0.10/esri-leaflet.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    
+  
+
   <style>
-    #map{ width: 1000px; height: 600px; }
+    #map{ width: 100%; height: 90%; }
   </style>
 </head>
 <body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="https://www.thetfordvt.gov/government/conservation-commission">
+            <img src="./tcc_logo.png" width="50" height="50" alt="">
+          </a>
+        
+        <a class="navbar-brand" href="#">Thetford Natural Resource Maps</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Map Templates
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="./index.html?template=forest">Forest Blocks</a>
+                <a class="dropdown-item" href="./index.html?template=water">Surface Water</a>
+                <a class="dropdown-item" href="./index.html?template=political">Political Boundaries</a>
+                <a class="dropdown-item" href="./index.html">Blank</a>
+              </div>
+            </li>
+          </ul>
+          
+        </div>
+      </nav>
+
+      
+    
 
   <div id="map"></div>
 
@@ -21,11 +55,12 @@
   var map = L.map('map',{zoomControl: false}).setView([43.835189, -72.252179], 12);
 
   // load a tile layer 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
+  var osm = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	subdomains: 'abcd',
 	maxZoom: 20
-    }).addTo(map);
+    });
+    osm.addTo(map);
 
     var imagery = L.esri.imageMapLayer({'url':"http://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/IMG_VCGI_CLR2022_WM_CACHE/ImageServer"});
     var hillshade = L.esri.imageMapLayer({'url':"http://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/IMG_VCGI_LIDARHILLSHD_WM_CACHE_v1/ImageServer"});
@@ -42,6 +77,9 @@
     // });
     // trails.addTo(map);
     
+    // Add research-grad iNaturalist data dowloaded from GBIF
+    // GBIF.org (01 April 2023) GBIF Occurrence Download  https://doi.org/10.15468/dl.cm4p6s
+
     // control that shows state info on hover
 	const info = L.control({'position':'topleft'});
 
@@ -82,14 +120,24 @@
                 contents += `Owner Addr: ${props.ADDRGL1}, ${props.CITYGL} ${props.STGL} ${props.ZIPGL}</br>`;
                 contents += `SPAN: ${props.GLIST_SPAN}</br>`; 
                 contents += `ParcelNumber: ${props.PARCID}</br>`;
+            }else if (props.hasOwnProperty('DISTRICT')){
+                contents  = `<b>Zoning District</b></br>`;
+                contents += `Type: ${props.DISTRICT}`;
             }else if(props.hasOwnProperty('PRIORITY')){
                 if(props.hasOwnProperty('COMPDESC')){
-                    contents  = `<b>Highest Priority Interior Forest Block</b></br>`;
+                    if(props.COMPDESC.includes('SURFACE WATER')){
+                        contents  = `<b>Highest Priority Surface Water</b></br>`;
+                    }else{
+                        contents  = `<b>Highest Priority Interior Forest Block</b></br>`;
+                        contents += `Size: ${props.acres.toFixed(1)} acres</br>`;
+                        contents += `Biophysical Region: ${props.biophysreg}</br>`;
+                    }    
                 }else{
                     contents  = `<b>Highest Priority Connected Forest Block</b></br>`;
+                    contents += `Size: ${props.acres.toFixed(1)} acres</br>`;
+                    contents += `Biophysical Region: ${props.biophysreg}</br>`;
                 }
-                contents += `Size: ${props.acres.toFixed(1)} acres</br>`;
-                contents += `Biophysical Region: ${props.biophysreg}</br>`;
+                
             }else if(props.hasOwnProperty('threatF1')){
                 contents  = `<b>Habitat Blocks and Wildlife Corridors</b></br>`;
                 contents += `Size: ${props.ACRES.toFixed(1)} acres</br>`;  
@@ -101,7 +149,18 @@
                 contents = `<b>Deer Wintering Area</b></br>`;
                 contents += `Rating: ${props.Rating}</br>`;
                 contents += `Size: ${props.Acres.toFixed(1)} acres</br>`;
+            }else if(props.hasOwnProperty('NatComTxt')){
+                contents = `<b>Advisory Wetland</b></br>`;
+                contents += `Description: ${props.NatComTxt}</br>`;
+                contents += `Type: ${props.TYPE_1}</br>`;
+                // See https://anrweb.vt.gov/PubDocs/DEC/WSMD/Wetlands/Docs/wl_gis_standard.pdf for type interpretation
+            }else if(props.hasOwnProperty('poolStatus')){
+                contents = `<b>${props.poolStatus} Vernal Pool</b></br>`;
+                contents += `Identification Method: ${props.mappedMeth}</br>`;
+            }else{
+                console.log(props);
             }
+
             
         }
         this._div.innerHTML = `${contents}`;
@@ -208,6 +267,30 @@
         const colors = {1:'#F9EBEA', 2:'#F2D7D5', 3:'#E6B0AA', 4:'#D98880', 5:'#CD6155', 6:'#C0392B', 7:'#A93226', 8:'#922B21', 9:'#7B241C', 10:'#641E16'}
         return {weight:1, color:colors[feature.properties.Fwghtrcl], opacity:0.8, fillOpacity:0.2, fillColor:colors[feature.properties.Fwghtrcl]};
     }
+    function zoneStyle(feature){
+        const colors ={"COMMUNITY BUSINESS":"#756bb1", "VILLAGE RESIDENTIAL":"#bcbddc", "RURAL RESIDENTIAL":"#efedf5" }
+        return {weight:1, color:colors[feature.properties.DISTRICT], opacity:0.9, fillOpacity:0.4, fillColor:colors[feature.properties.DISTRICT]};
+    }
+    function wetlandStyle(feature){
+        return {weight:1, color:'#06cf82', opacity:0.8, fillOpacity:0.4, fillColor:'#06cf82'};
+    }
+    function surfwaterStyle(feature){
+        return {weight:1, color:'#344ceb', opacity:0.8, fillOpacity:0.4, fillColor:'#344ceb'};
+    }
+    function confVernalStyle(feature){
+        return {weight:1, color:'#2a7862', opacity:0.8, fillOpacity:0.8, fillColor:'#2a7862'};
+    }
+    function vernalStyle(feature){
+        return {weight:1, color:'#2a7862', opacity:0.8, fillOpacity:0.3, fillColor:'#2a7862'};
+    }
+
+    var zoningURL = "https://services1.arcgis.com/u6q3LNruiYmDjGX5/arcgis/rest/services/VTZONING_THETFORD_20110926_poly_zones/FeatureServer/0";
+    var zones = L.esri.featureLayer({
+        url: zoningURL,
+        style: zoneStyle,
+        onEachFeature: onEachFeature,
+    });
+
     function deerWinteringStyle(feature){
         return {weight:1, color:'#A04000', opacity:0.8, fillOpacity:0.2, fillColor:'#A04000'};
     }
@@ -225,6 +308,33 @@
         style: interiorForestStyle,
         onEachFeature: onEachFeature,
     });
+
+    var surfwaterURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_ACT174CONSTRAINTS_SP_v2022/FeatureServer/60";
+    var surfwater = L.esri.featureLayer({
+        url: surfwaterURL,
+        style: surfwaterStyle,
+        onEachFeature: onEachFeature,
+    });
+    var wetlandsURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_ACT174CONSTRAINTS_SP_v2022/FeatureServer/120";
+    var wetlands = L.esri.featureLayer({
+        url: wetlandsURL,
+        style: wetlandStyle,
+        onEachFeature: onEachFeature,
+    });
+    
+    var confVernalURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_ACT174CONSTRAINTS_SP_v2022/FeatureServer/59";
+    var confVernals = L.esri.featureLayer({
+        url: confVernalURL,
+        style: confVernalStyle,
+        onEachFeature: onEachFeature,
+    });
+    var unconfVernalURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_ACT174CONSTRAINTS_SP_v2022/FeatureServer/112";
+    var unconfVernals = L.esri.featureLayer({
+        url: unconfVernalURL,
+        style: vernalStyle,
+        onEachFeature: onEachFeature,
+    });
+    var vernals = L.layerGroup([confVernals, unconfVernals]);
 
     var connBlockLinesURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/182"
     var connBlocks = L.esri.featureLayer({
@@ -263,18 +373,18 @@
         diversityBlocks.resetStyle(e.target);
         habitatBlocks.resetStyle(e.target);
         deerWintering.resetStyle(e.target);
+        zones.resetStyle(e.target);
+        wetlands.resetStyle(e.target);
+        surfwater.resetStyle(e.target);
+        confVernals.resetStyle(e.target);
+        unconfVernals.resetStyle(e.target);
 		//info.update();
-	}
-
-	function zoomToFeature(e) {
-		map.fitBounds(e.target.getBounds());
 	}
 
 	function onEachFeature(feature, layer) {
 		layer.on({
 			mouseover: highlightFeature,
-			mouseout: resetHighlight,
-			click: zoomToFeature
+			mouseout: resetHighlight
 		});
 	}
     
@@ -282,27 +392,137 @@
     //connBlocks.addTo(map);
     //parcels.addTo(map);
     towns.addTo(map);
-    conservedLands.addTo(map);
+
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    console.log(params);
+    if("template" in params){
+        console.log(params.template);
+        if(params.template=='water'){
+            surfwater.addTo(map);
+            wetlands.addTo(map);
+            confVernals.addTo(map);
+        }else if(params.template=='forest'){
+            connBlocks.addTo(map);
+            interiorBlocks.addTo(map);
+        }else if(params.template=='political'){
+            conservedLands.addTo(map);
+            parcels.addTo(map);
+            zones.addTo(map);
+        }
+    }
+    //conservedLands.addTo(map);
 
     L.control.zoom({position: 'topright'}).addTo(map);
     
     parcels.bringToFront();
     conservedLands.bringToFront();
     
+    // Add popup with information on click
+    var popup = L.popup();
+    var clickMarker;
+    var popupContents;
+
+    function ProcessClick(lat,lon){
+
+        popupContents = "";
+        popupContents += "You what? You clicked the map at " + lat + ", " + lon + "</br>";
+        var pt = turf.point([lon, lat]);
+        
+        connBlocks.eachLayer(function (layer) {
+
+            //isInside =turf.inside(theMarker.toGeoJSON(), layer.toGeoJSON());
+
+            // Newer method in Turf
+            var isInside =turf.booleanPointInPolygon(pt, layer.toGeoJSON());
+
+            if (isInside){
+                popupContents += "connected forest block";
+            }
+        });
+
+        // if (clickMarker != undefined) {
+        //         map.removeLayer(clickMarker);
+        //     };
+        //     // if (newgeojsonLayer != undefined) {
+        //     //     map.removeLayer(newgeojsonLayer);
+        //     // };  
+
+
+        // clickMarker = L.marker([lat,lon]).addTo(map);  //added to show where you clicked.
+
+        // muniLayer.eachLayer(function (layer) {
+
+        //     //isInside =turf.inside(theMarker.toGeoJSON(), layer.toGeoJSON());
+
+        // // Newer method in Turf
+        // isInside =turf.booleanPointInPolygon((theMarker.toGeoJSON(), layer.toGeoJSON());
+
+        //     if (isInside){
+        //             a = "City/Town: " + layer.feature.properties.NAME;
+        //             console.log("City/Town: " + layer.feature.properties.NAME);
+        //     }
+        // });
+
+        // countyLayer.eachLayer(function (layer) {
+
+        //     isInside =turf.inside(theMarker.toGeoJSON(), layer.toGeoJSON());
+
+        //     if (isInside){
+        //             b = "County: " + layer.feature.properties.NAME;
+        //             console.log("County: " + layer.feature.properties.NAME);
+        //     }
+        // });
+
+        // stateLayer.eachLayer(function (layer) {
+
+        //     isInside =turf.inside(theMarker.toGeoJSON(), layer.toGeoJSON());
+
+        //     if (isInside){
+        //         console.log("State: " + layer.feature.properties.STATE_NAME);
+        //         c = "State: " + layer.feature.properties.STATE_NAME;
+        //     }
+        // })
+
+    }
+
+    function onMapClick(e) {
+        ProcessClick(e.latlng.lat, e.latlng.lng); 
+        popup
+            .setLatLng(e.latlng)
+            .setContent(popupContents)
+            .openOn(map);
+    }
+
+    //map.on('click', onMapClick);
+
+
+    var baseMaps = {
+    "OpenStreetMap": osm,
+    "VT Imagery": imagery,
+    "VT Hillshade" : hillshade
+    };
+
     var mapOverlays = {
     "Parcels": parcels,
+    "Development Zones": zones,
     "Protected Lands": conservedLands,
+    "Advisory Wetlands": wetlands,
+    "Vernal Pools" : vernals,
+    "Surface Water" : surfwater,
     "Interior Forest Blocks": interiorBlocks,
     "Connected Forest Blocks": connBlocks,
     "Physical Landscape Diversity Blocks": diversityBlocks,
     "Habitat Blocks and Wildlife Corridors" : habitatBlocks,
     "Deer Wintering Areas" : deerWintering,
-    "2022 Imagery" : imagery,
-    "Hillshade" : hillshade,
     };
     
-    L.control.layers(null, mapOverlays, {position:'bottomright'}).addTo(map);
+    L.control.layers(baseMaps, mapOverlays, {position:'bottomright'}).addTo(map);
 
   </script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>  
 </body>
 </html>
