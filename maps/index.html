@@ -6,8 +6,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/esri-leaflet/3.0.10/esri-leaflet.js"></script>
   
+<script
+src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"
+integrity="sha512-i9mZ/0lnBMdKZjkVQXImtZbWzrhomyyQzXarfT4ki1eD/Bi+rcV4lFyzX52lbRQtqj070JQea4p8QNCMrHzuYg=="
+crossorigin=""></script>
+
+<script
+src="https://unpkg.com/esri-leaflet-vector@4.0.2/dist/esri-leaflet-vector.js"
+integrity="sha512-aAHWbFg6VxHNSajpIsE9TfRZQBVNEJjVbiTE1VhpRtrYLP7KoPl0ZCyAKiTrAYFfl4lNce1ZHpEJJ0lA/LB3pQ=="
+crossorigin=""></script>
 
   <style>
     #map{ width: 100%; height: 90%; }
@@ -36,6 +44,7 @@
                 <a class="dropdown-item" href="./index.html?template=forest">Forest Blocks</a>
                 <a class="dropdown-item" href="./index.html?template=water">Surface Water</a>
                 <a class="dropdown-item" href="./index.html?template=political">Political Boundaries</a>
+                <a class="dropdown-item" href="./index.html?template=agriculture">Agriculture</a>
                 <a class="dropdown-item" href="./index.html">Blank</a>
               </div>
             </li>
@@ -109,6 +118,16 @@
                     contents += `Type/Access: Unknown</br>`;
                 }
                 contents += `Size: ${props.GISACRES.toFixed(1)} acres`;
+            }else if(props.hasOwnProperty('PRIME')){
+                contents  = `<b>Agriculturally Important Soil</b></br>`;
+                contents += `Category: ${props.PRIME}`;
+            }else if(props.hasOwnProperty('PRGMAC')){
+                contents =`<b>Use Value Appraisal Property</b></br>`;
+                contents += `Enrolled Acres: ${props.PRGMAC}</br>`;
+                contents += `Has Management Plan? ${props.MGMTPLAN}</br>`;
+                contents += `Active Status: ${props.ACTIVE}</br>`;
+                contents += `SPAN: ${props.SPAN}</br>`;
+                
             }else if(props.hasOwnProperty('OWNER1')){
                 contents  = `<b>${props.E911ADDR}</b></br>`;
                 contents += `Owner: ${props.OWNER1}`;
@@ -362,8 +381,78 @@
         url: deerWinteringURL,
         style: deerWinteringStyle,
         onEachFeature: onEachFeature
-    })
+    });
 
+    function agSoilsStyle(feature){
+        if (feature.properties.PRIME == 'Prime'){
+            return {weight:1, color:'#d6b024', opacity:0.8, fillOpacity:0.3, fillColor:'#d6b024'};
+        }else if (feature.properties.PRIME == 'Prime (b)'){
+            return {weight:1, color:'#dbc05a', opacity:0.8, fillOpacity:0.3, fillColor:'#dbc05a'};
+        }else if (feature.properties.PRIME == 'Prime (f)'){
+            return {weight:1, color:'#d9c88b', opacity:0.8, fillOpacity:0.3, fillColor:'#d9c88b'};
+        }else if(feature.properties.PRIME == 'Statewide'){
+            return {weight:1, color:'#916004', opacity:0.8, fillOpacity:0.3, fillColor:'#916004'};
+        }else if(feature.properties.PRIME=='Statewide (b)'){
+            return {weight:1, color:'#8a703f', opacity:0.8, fillOpacity:0.3, fillColor:'#8a703f'};
+        }else{
+            return {weight:1, color:'#d6b024', opacity:0.0, fillOpacity:0.0, fillColor:'#d6b024'};
+        }   
+    }
+    var agSoilsURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_GEOLOGIC_SP_NOCACHE_v1/MapServer/2";
+    var agSoils = L.esri.featureLayer({
+        url: agSoilsURL,
+        style: agSoilsStyle,
+        simplifyFactor: 0.25,
+        onEachFeature: onEachFeature
+    });
+
+    function uvaStyle(feature){
+        return {weight:1, color:'#a10303',opacity:0.7, fillOpacity:0.2, fillColor:'#a10303'};
+    }
+
+    var uvaURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_CADASTRAL_SP_NOCACHE_v2/MapServer/41";
+    // var query = L.esri.query({url: uvaURL});
+    // query.intersects(L.latLngBounds(L.latLng(43.760314, -72.387519), L.latLng(43.882345, -72.178663)));
+    // query.run(function (error, featureCollection, response) {
+    // if (error) {
+    // console.log(error);
+    // return;
+    // }
+    // console.log('Found ' + featureCollection.features.length + ' features');
+    // });
+    
+    var uva = L.esri.featureLayer({
+        url: uvaURL,
+        style: uvaStyle,
+        onEachFeature: onEachFeature,
+        where:"1=0"
+    });
+
+    const spans = [];
+    parcels.query()
+    .where("TOWN='THETFORD'")
+        .run(function (error, featureCollection, response) {
+            if (error) {
+            console.log(error);
+            return;
+            }
+            for (var i =0; i<featureCollection.features.length; i++){
+                if(featureCollection.features[i].properties.GLIST_SPAN){
+                    spans.push("'" + featureCollection.features[i].properties.GLIST_SPAN + "'");
+                }
+            }
+            uva.setWhere("SPAN IN (" + spans.join(",") + ")");
+        });
+        
+
+    function agLandsStyle(style){
+        console.log(style);
+        return style;
+    };
+    var agLandsURL = "https://tiles.arcgis.com/tiles/BkFxaEFNwHqX3tAw/arcgis/rest/services/VECTOR_VCGI_AGRICULTURE2016_WM_v1/VectorTileServer";
+    var agLands = L.esri.Vector.vectorTileLayer(agLandsURL,
+        {style: agLandsStyle}
+        );
 
 	function resetHighlight(e) {
 		parcels.resetStyle(e.target);
@@ -378,7 +467,9 @@
         surfwater.resetStyle(e.target);
         confVernals.resetStyle(e.target);
         unconfVernals.resetStyle(e.target);
-		//info.update();
+        agSoils.resetStyle(e.target);
+        uva.resetStyle(e.target);
+        //info.update();
 	}
 
 	function onEachFeature(feature, layer) {
@@ -395,9 +486,8 @@
 
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());
-    console.log(params);
+    
     if("template" in params){
-        console.log(params.template);
         if(params.template=='water'){
             surfwater.addTo(map);
             wetlands.addTo(map);
@@ -409,6 +499,10 @@
             conservedLands.addTo(map);
             parcels.addTo(map);
             zones.addTo(map);
+        }else if(params.template=='agriculture'){
+            agSoils.addTo(map);
+            agLands.addTo(map);
+            uva.addTo(map);
         }
     }
     //conservedLands.addTo(map);
@@ -515,6 +609,9 @@
     "Physical Landscape Diversity Blocks": diversityBlocks,
     "Habitat Blocks and Wildlife Corridors" : habitatBlocks,
     "Deer Wintering Areas" : deerWintering,
+    "Agricultural Soils" : agSoils,
+    "Agricultural Lands" : agLands,
+    "Use Value Parcels" : uva,
     };
     
     L.control.layers(baseMaps, mapOverlays, {position:'bottomright'}).addTo(map);
