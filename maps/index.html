@@ -1,625 +1,380 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Conservation Map -- Preliminary</title>
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.js"></script>
-  
-<script
-src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"
-integrity="sha512-i9mZ/0lnBMdKZjkVQXImtZbWzrhomyyQzXarfT4ki1eD/Bi+rcV4lFyzX52lbRQtqj070JQea4p8QNCMrHzuYg=="
-crossorigin=""></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Conservation Map -- Preliminary</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
-<script
-src="https://unpkg.com/esri-leaflet-vector@4.0.2/dist/esri-leaflet-vector.js"
-integrity="sha512-aAHWbFg6VxHNSajpIsE9TfRZQBVNEJjVbiTE1VhpRtrYLP7KoPl0ZCyAKiTrAYFfl4lNce1ZHpEJJ0lA/LB3pQ=="
-crossorigin=""></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+
+    <!-- Load Esri Leaflet Vector from CDN -->
+    <script src="https://unpkg.com/esri-leaflet-vector@4.2.5/dist/esri-leaflet-vector.js" crossorigin=""></script>
+
+    <!-- Add leaflet panel layers for layer control panel-->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-panel-layers@1.3.1/dist/leaflet-panel-layers.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/leaflet-panel-layers@1.3.1/dist/leaflet-panel-layers.min.css" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <style>
-    #map{ width: 100%; height: 90%; }
+    html,
+    body,
+    #map {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      color: #323232;
+    }
+    #info-box {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        padding: 10px;
+        border: 1px solid #ccc;
+        z-index: 1000;
+        opacity: 0.8;
+        display: none;
+    }
   </style>
+
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="https://www.thetfordvt.gov/government/conservation-commission">
-            <img src="./tcc_logo.png" width="50" height="50" alt="">
-          </a>
-        
-        <a class="navbar-brand" href="#">Thetford Natural Resource Maps</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Map Templates
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="./index.html?template=forest">Forest Blocks</a>
-                <a class="dropdown-item" href="./index.html?template=water">Surface Water</a>
-                <a class="dropdown-item" href="./index.html?template=political">Political Boundaries</a>
-                <a class="dropdown-item" href="./index.html?template=agriculture">Agriculture</a>
-                <a class="dropdown-item" href="./index.html">Blank</a>
-              </div>
-            </li>
-          </ul>
-          
-        </div>
-      </nav>
-
-      
-    
-
   <div id="map"></div>
-
+  <div id="info-box"></div>
   <script>
 
   // initialize the map
-  var map = L.map('map',{zoomControl: false}).setView([43.835189, -72.252179], 12);
+  
+  var map = L.map('map').setView([43.835189, -72.252179], 12);
 
-  // load a tile layer 
-  var osm = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-	subdomains: 'abcd',
-	maxZoom: 20
-    });
-    osm.addTo(map);
+    var worldStreetMap = L.esri.basemapLayer('Streets').addTo(map);
 
     var imagery = L.esri.imageMapLayer({'url':"http://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/IMG_VCGI_CLR2022_WM_CACHE/ImageServer"});
     var hillshade = L.esri.imageMapLayer({'url':"http://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/IMG_VCGI_LIDARHILLSHD_WM_CACHE_v1/ImageServer"});
-
-    // Add trails
-    // var trailLinesURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_EMERGENCY_SP_NOCACHE_v1/MapServer/21/";
-    // var trails = L.esri.featureLayer({
-    //     url: trailLinesURL,
-    //     style: function (feature) {
-    //         return {color: '#f49842',
-    //         weight: 1,
-    //         opacity: 0.8,};
-    //         }
-    // });
-    // trails.addTo(map);
     
-    // Add research-grad iNaturalist data dowloaded from GBIF
-    // GBIF.org (01 April 2023) GBIF Occurrence Download  https://doi.org/10.15468/dl.cm4p6s
+    worldStreetMap.addTo(map);
+    
+    const layerData = [
+    {
+        "name": "Interior Forest Blocks",
+        "source": '<a href="https://vtfishandwildlife.com/conserve/vermont-conservation-design">Vermont Conservation Design</a>',
+        "description": `According to BioFinder, "Interior Forest Blocks are a selection of habitat blocks that best provide interior forest conditions in
+each biophysical region of Vermont. Habitat blocks themselves are areas of contiguous forest and
+other natural habitats that are unbroken by roads, development, or agriculture".  
+See <a href="https://anr.vermont.gov/sites/anr/files/documents/Interior%20Forest%20Summary.pdf">the biofinder documentation</a> for more details.`,
+        "info-name": "Interior Forest Block",
+        "url": "https://anrmaps.vermont.gov/arcgis/rest/services/EGC_Services/MAP_ANR_BIOFINDER4_WM_NOCACHE/MapServer/1",
+        "categorical-style": {"key": "Interior_Forest_Priority", 
+                              "Highest Priority":{weight:1, color:'#28B463', opacity:0.8, fillOpacity:0.3, fillColor:'#28B463'},
+                              "Priority": {weight:1, color:'#28B463', opacity:0.5, fillOpacity:0.1, fillColor:'#28B463'}
+                            },
+        "info-params": {'Acreage': 'habitat_block_area_acres', 'Priority':'Interior_Forest_Priority', 'Biophysical Region': 'biophysical_region_name', 'Percent Conserved': 'conserved_land_pct', 'Vernal Pool Count':'vernal_pool_count'},
+        "filter": `Interior_Forest='Interior Forest'`,
+        'simplifyFactor': 0.2,
+    },
+    {
+        "name": "Forest Connectivity Blocks",
+        "source": '<a href="https://anr.vermont.gov/">Vermont Agency of Natural Resource (ANR)</a>',
+        "description": `According to BioFinder, "Connectivity Blocks are a selection of habitat blocks that create a connected network of forest across
+Vermont and into adjacent states and provinces. These are mostly forested areas but also include
+shrubland and wetland. They include the largest forests that are serving as core habitat, as well as
+sometimes smaller, connecting blocks. Connectivity Blocks are the network of forest blocks that together
+provide terrestrial connectivity at the regional scale, across Vermont and to adjacent states and Québec,
+and connectivity between all Vermont biophysical regions."
+See <a href="https://anr.vermont.gov/sites/anr/files/documents/Connectivity%20Blocks%20Summary.pdf">the biofinder documentation</a> for more details.`,
+        "info-name": "Forest Connectivity Block",
+        "url": "https://anrmaps.vermont.gov/arcgis/rest/services/EGC_Services/MAP_ANR_BIOFINDER4_WM_NOCACHE/MapServer/1",
+        "categorical-style": {"key": "Connectivity_Blocks_Priority", 
+                              "Highest Priority":{weight:1, color:'#73C6B6', opacity:0.8, fillOpacity:0.3, fillColor:'#73C6B6'},
+                              "Priority": {weight:1, color:'#73C6B6', opacity:0.8, fillOpacity:0.1, fillColor:'#73C6B6'}
+                            },
+        "info-params": {'Acreage': 'habitat_block_area_acres', 'Priority':'Connectivity_Blocks_Priority', 'Biophysical Region': 'biophysical_region_name', 'Percent Conserved': 'conserved_land_pct', 'Vernal Pool Count':'vernal_pool_count'},
+        "filter": `Connectivity_Blocks='Connectivity Block'`,
+        'simplifyFactor': 0.2,
+    },
+    {
+        "name": "Surface Water",
+        "source": '<a href="https://vtfishandwildlife.com/conserve/vermont-conservation-design">Vermont Conservation Design</a>',
+        "url": "https://anrmaps.vermont.gov/arcgis/rest/services/EGC_Services/MAP_ANR_BIOFINDER4_WM_NOCACHE/MapServer/0",
+        "info-name":"Highest Priority Surface Water",
+        "description": `This layer contains the highest priority areas with "Vermont’s network of lakes, ponds, rivers and streams, and their associated
+riparian zones, valley bottoms, and river corridors".  For more information on this data and its ecological importance, consult the Vermont Conservation 
+ Design's <a href="https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Surface-Waters-and-Riparian-Areas.pdf">Surface Waters and Riparian Areas</a> documentation. `,
+        "info-params": {},
+        "style": {weight:1, color:'#344ceb', opacity:0.8, fillOpacity:0.4, fillColor:'#344ceb'},
+        "filter": `SurfaceWaterPriority='HIGHEST PRIORITY'`
+    },
+    {
+        "name": "Vernal Pools",
+        "source": '<a href="https://vtfishandwildlife.com/conserve/vermont-conservation-design">Vermont Conservation Design</a>',
+        "url": "https://anrmaps.vermont.gov/arcgis/rest/services/EGC_Services/MAP_ANR_BIOFINDER4_WM_NOCACHE/MapServer/2",
+        "info-name":"Vernal Pools",
+        "description": `Possible vernal pools with a 650ft buffer.  From the 
+        <a href="https://anr.vermont.gov/sites/anr/files/documents/Vernal%20Pools%20Summary.pdf?_gl=1*f5q9ds*_ga*MTM3OTc4OTc2OC4xNzI1NDkzMTMy*_ga_V9WQH77KLW*MTczMjQ3ODc4My41LjAuMTczMjQ3ODc4NS4wLjAuMA">Vermont Conservation Design documentation</a>, 
+" Vernal Pools are small (generally less than oneacre), ephemeral pools that occur in natural basins within upland forests. 
+They typically have no permanent inlet or outlet streams and have very small watersheds."  This layer shows only the "highest priority" 
+vernal pools, which have been field verified.`,
+        "info-params": {},
+        "style": {weight:1, color:'#2a7862', opacity:0.8, fillOpacity:0.8, fillColor:'#2a7862'},
+        "filter": `VernalPools='HIGHEST PRIORITY'`
+    },
+    {
+        "name": "Agricultural Soils",
+        "source": `<a href="https://vcgi.vermont.gov/">VT Center for Geographic Information</a>`,
+        "url": "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_GEOLOGIC_SP_NOCACHE_v1/MapServer/2",
+        "info-name":"Agricultural Soil",
+        "description": `A subset of the USGS <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-survey-geographic-database-ssurgo">"Soil Survey Geographic Database"</a>
+        created by the state of Vermont to identify prime agricultural soils in the state.`,
+        "info-params": {'Prime Type': 'PRIME'},
+        "style": {weight:1, color:'#d6b024', opacity:0.8, fillOpacity:0.3, fillColor:'#d6b024'},
+        'simplifyFactor': 0.2,
+    },
+    {
+        "name": "Use Value Appraisal",
+        "source": `<a href="https://anr.vermont.gov/">VT Agency of Natural Resources<a>`,
+        "url": "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_CADASTRAL_SP_NOCACHE_v2/MapServer/41",
+        "style": {weight:1, color:'#a10303',opacity:0.7, fillOpacity:0.2, fillColor:'#a10303'},
+        "description": `Parcels enrolled in Vermont's <a href="https://fpr.vermont.gov/forest/UseValueAppraisal">use value appraisal program</a> (i.e., parcels "in current use").`,
+        "info-params": {'SPAN':'SPAN', 'Entry Year':'ENTRYYEAR'},
+        "info-name": "Parcel in Current Use"
+    },
+    {
+        "name": "Wetlands",
+        "source": `<a href="https://anr.vermont.gov/">VT Agency of Natural Resources<a>`,
+        "url": "https://services5.arcgis.com/Uzks6LSde6r23wwG/ArcGIS/rest/services/Vermont_Significant_Wetland_Inventory/FeatureServer/0",
+        "style": {weight:1, color:'#06cf82', opacity:0.8, fillOpacity:0.4, fillColor:'#06cf82'},
+        "description": `Data from the <a href="https://dec.vermont.gov/watershed/wetlands/maps">Vermont Significant Wetlands Inventory (VSWI)</a>. 
+        From the <a href="https://anrgeodata.vermont.gov/datasets/VTANR::vswi-wetlands-class-layer/about">ANR documentation</a>, 
+        "The State of Vermont protects wetlands which provide significant functions and values and also protects a buffer zone directly
+        adjacent to significant wetlands. Wetlands in Vermont are classified as Class I, II, or III based on the significance of the 
+        functions and values they provide. Class I and Class II wetlands provide significant functions and values and are protected 
+        by the Vermont Wetland Rules."  Additional information can be found in the 
+        <a href="https://anrmaps.vermont.gov/websites/WetlandScreening/Docs/2021%20Mapping%20Guidance%20VSWI.pdf">data description</a> provided by the Vermont Wetlands Program. `,
+        "info-params": {'Class':'CLASS'},
+        "info-name": "Wetland"
+    },
+    {
+        "name": "Highway Crossings",
+        "source": `<a href="https://vcgi.vermont.gov/">VT Center for Geographic Information</a>`,
+        "url": "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_ECOLOGIC_SP_NOCACHE_v1/MapServer/8",
+        "description": `Wildlife crossing ares across state highways. From the <a href="https://geodata.vermont.gov/datasets/VCGI::vt-wildlife-crossing-value/about">VCGI documentation</a>, "The values of the [wildlife crossing value] WCV range from 1-10, ten being the
+         most signifigant and 1 being the least signifigant. The relative ranking systems allows for relative priority areas within 
+         different regions. This provides a roadway specific description of potential WLH and may be useful for purposes of 
+         transportation planning and identification of sites that may be priority areas for wildlife crossing structures. 
+         The Wildlife Linkage Habitat Analysis uses landscape scale data to identify or predict the location of potentially significant
+          wildlife linkage habitats (WLH) associated with state roads throughout Vermont. For purposes of this project, 
+          WLH is a term used to describe those habitats associated with Vermont roads where wildlife move, migrate, and access 
+          various other habitats and parts of their range (similar to, but broader than, wildlife corridors)."`,
+        "style": {color: '#e34a33', weight: 3, opacity: 1.0},
+        "info-params": {"Crossing Value": "WCV_MASTER"},
+        "info-name": "Wildlife Crossing"
+    },
+    {
+        "name": "Other Wildlife Crossings",
+        "source": '<a href="https://vtfishandwildlife.com/conserve/vermont-conservation-design">Vermont Conservation Design</a>',
+        "url": "https://anrmaps.vermont.gov/arcgis/rest/services/EGC_Services/MAP_ANR_BIOFINDER4_WM_NOCACHE/MapServer/2",
+        "info-name":"Wildlife Crossings",
+        "description": `Areas on smaller roads that have been identified identified by the Vermont Conservation Design as locations where wildlife are likely to cross.  More information can be found in the <a href="https://anr.vermont.gov/sites/anr/files/documents/Wildlife%20Road%20Crossings%20Summary.pdf?_gl=1*1rebr*_ga*MTM3OTc4OTc2OC4xNzI1NDkzMTMy*_ga_V9WQH77KLW*MTczMjQ3ODc4My41LjAuMTczMjQ3OTE1MS4wLjAuMA">VCD documentation</a>.`,
+        "info-params": {},
+        "style": {color: '#e34a33', weight: 1, opacity: 1.0},
+        "filter": ` WildlifeRoadCrossings='HIGHEST PRIORITY'`
+    },
+    {
+        "name": "Deer Wintering Areas",
+        "source": `<a href="https://anr.vermont.gov/">VT Agency of Natural Resources<a>`, 
+        "url": "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/171",
+        "style": {weight:1, color:'#A04000', opacity:0.8, fillOpacity:0.2, fillColor:'#A04000'},
+        "description": `From the ANR description: "Deer winter habitat is critical to the long term survival of white-tailed 
+        deer (Odocoileus virginianus) in Vermont. Being near the northern extreme of the white-tailed deer's range, 
+        functional winter habitats are essential to maintain stable populations of deer in many years when and where 
+        yarding conditions occur. Consequently, deer wintering areas are considered under Act 250 and other local, state,
+         and federal regulations that require the protection of important wildlife habitats. DWAs are generally characterized 
+         by rather dense softwood (conifer) cover, such as hemlock, balsam fir, red spruce, or white pine. Occasionally DWAs 
+         are found in mixed forest with a strong softwood component or even on found west facing hardwood slopes in conjunction 
+         with softwood cover." More information in VT ANR's <a href="https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Learn%20More/LandownersGuide/8.Deer_.pdf">Deer Wintering Management</a> document.`,
+        "info-params": {"Acreage": "Acres", "Rating":"Rating"},
+        "info-name": "Deer Wintering Area"
+    },
+    {
+        "name": "Thetford Zoning Districts",
+        "source": `<a href="https://www.trorc.org/">Two Rivers Ottaquechee Region Commission (TRORC)`,
+        "url": "https://services1.arcgis.com/u6q3LNruiYmDjGX5/arcgis/rest/services/VTZONING_THETFORD_20110926_poly_zones/FeatureServer/0",
+        "style": {weight:1, color:'#756bb1', opacity:0.9, fillOpacity:0.4, fillColor:'#756bb1'},
+        "description": `Thetford zoning districts.  Any areas not covered by these zones is considered "Rural Residential".  More information is available from the <a href="https://www.thetfordvt.gov/departments/zoning">Thetford Zoning website</a>.`,
+        "info-params": {"Type": "DISTRICT"},
+        "info-name": "Development Zone",
+        "filter": "NOT (DISTRICT ='RURAL RESIDENTIAL')"
+    },
+    {
+        "name": "Parcels",
+        "source": `<a href="https://vcgi.vermont.gov/">VT Center for Geographic Information</a>`,
+        "url": "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_VTPARCELS_WM_NOCACHE_v2/FeatureServer/1",
+        "style": {weight: 1, opacity: 0.8, color: '#979797', fillOpacity: 0.0, fillColor: 'white'},
+        "description": "Boundaries of parcels in Thetford.",
+        "filter": "TOWN='THETFORD'",
+        "info-params": {"SPAN": "GLIST_SPAN", "Address": "E911ADDR"},
+        "info-name": "Parcel"
+    },
+    {
+        "name": "Protected Lands",
+        "source": ``,
+        "url": "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_CADASTRAL_SP_NOCACHE_v1/MapServer/10",
+        "description": `Highlights land that is protected through conservation easements or public ownership.  
+        More information, includign the definitions of public access type numbers, can be found in the <a href="https://vcgi.vermont.gov/sites/vcgiupdate/files/doc_library/Protectedlands_Standard_v1.4.Final_.pdf">
+        Vermont Protected Lands Database</a>.`,
+        "style": {weight: 1, opacity: 0.8, color: '#F1C40F', fillOpacity: 0.4, fillColor: '#F1C40F'},
+        "info-params": {"Name": "NAME", "Public Access Type": "PUBACCESS", "Protection Type": "PTYPE1"},
+        "info-name": "Protected Land"
+    },
+    {   
+        "name": "Town Boundaries",
+        "source": `<a href="https://vcgi.vermont.gov/">VT Center for Geographic Information</a>`,
+        "url": "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_OPENDATA_Boundary_BNDHASH_line_SP_v1/FeatureServer/0",
+        "style": {weight: 3, opacity: 0.8, color: '#979797'},
+        "description": "Political boundaries between towns.",
+        "active": true,
+    },
+    ];
 
-    // control that shows state info on hover
-	const info = L.control({'position':'topleft'});
 
-    info.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'info');
-        this.update();
-        return this._div;
-    };
+    var overlays = [{group: "Overlays", collapsed: true, layers: []}];
+    for (var i =0; i<layerData.length; i++) {
+        const d = layerData[i];
 
-    info.update = function (props) {
+        // Define a function that maps the feature to a style
+        let styleFunc = (feature) => d['style'];
+        if ("categorical-style" in d){
+            styleFunc = function(feature) {
+                return d['categorical-style'][feature.properties[d['categorical-style']['key']]];
+            };
+        }
         
-        
-        var contents = 'Hover over a parcel for details.';
-        if(props){
-            if(props.hasOwnProperty('PUBACCESS')){
-                contents  = `<b>Conserved Land</b></br>`;
-                contents += `Name: ${props.NAME}</br>`;
-                if(props.PUBACCESS==1){
-                    contents += `Type: Public Access</br>`;
-                }else if(props.PUBACCESS==2){
-                    contents += `Type: Privately Owned: easements allow limited public access</br>`;
-                }else if(props.PUBACCESS==3){
-                    contents += `Type: Privately Owned: no public access</br>`;
-                }else if(props.PUBACCESS==4){
-                    contents += `Type: Publicly Owned: access limited</br>`;
-                }else{
-                    contents += `Type/Access: Unknown</br>`;
-                }
-                contents += `Size: ${props.GISACRES.toFixed(1)} acres`;
-            }else if(props.hasOwnProperty('PRIME')){
-                contents  = `<b>Agriculturally Important Soil</b></br>`;
-                contents += `Category: ${props.PRIME}`;
-            }else if(props.hasOwnProperty('PRGMAC')){
-                contents =`<b>Use Value Appraisal Property</b></br>`;
-                contents += `Enrolled Acres: ${props.PRGMAC}</br>`;
-                contents += `Has Management Plan? ${props.MGMTPLAN}</br>`;
-                contents += `Active Status: ${props.ACTIVE}</br>`;
-                contents += `SPAN: ${props.SPAN}</br>`;
-                
-            }else if(props.hasOwnProperty('OWNER1')){
-                contents  = `<b>${props.E911ADDR}</b></br>`;
-                contents += `Owner: ${props.OWNER1}`;
-                if(props.OWNER2){
-                    contents += `, ${props.OWNER2}</br>`;
-                }else{
-                    contents += `</br>`;
-                }
-                contents += `Owner Addr: ${props.ADDRGL1}, ${props.CITYGL} ${props.STGL} ${props.ZIPGL}</br>`;
-                contents += `SPAN: ${props.GLIST_SPAN}</br>`; 
-                contents += `ParcelNumber: ${props.PARCID}</br>`;
-            }else if (props.hasOwnProperty('DISTRICT')){
-                contents  = `<b>Zoning District</b></br>`;
-                contents += `Type: ${props.DISTRICT}`;
-            }else if(props.hasOwnProperty('PRIORITY')){
-                if(props.hasOwnProperty('COMPDESC')){
-                    if(props.COMPDESC.includes('SURFACE WATER')){
-                        contents  = `<b>Highest Priority Surface Water</b></br>`;
+        // Define a function that generates the info box HTML
+        let infoFunc = function(feature, layer) {
+
+            // Hover event information box
+            layer.on('mouseover', function(e) {
+                var infoBox = document.getElementById('info-box');
+                //console.log(feature.properties); // TODO: Remove this once we have all layers in place
+                infoBox.innerHTML = "<strong>" + d["info-name"] + "</strong></br>";
+                for (var key in d["info-params"]){
+                    infoBox.innerHTML += key + ": "
+
+                    var value = feature.properties[d["info-params"][key]];
+                    if(typeof(value)=='number'){
+                        if (value % 1 === 0){
+                            infoBox.innerHTML += value;
+                        }else{
+                            infoBox.innerHTML += value.toFixed(2);
+                        }
                     }else{
-                        contents  = `<b>Highest Priority Interior Forest Block</b></br>`;
-                        contents += `Size: ${props.acres.toFixed(1)} acres</br>`;
-                        contents += `Biophysical Region: ${props.biophysreg}</br>`;
-                    }    
-                }else{
-                    contents  = `<b>Highest Priority Connected Forest Block</b></br>`;
-                    contents += `Size: ${props.acres.toFixed(1)} acres</br>`;
-                    contents += `Biophysical Region: ${props.biophysreg}</br>`;
+                        infoBox.innerHTML += value;
+                    }
+                    
+                    infoBox.innerHTML += "</br>"
                 }
+                infoBox.style.display = 'block';
+            });
+
+            // Mouse out event to remove info box
+            layer.on('mouseout', function(e) {
+                document.getElementById('info-box').style.display = 'none';
+            });
+        }
+        
+        modal_name = d['name'].replace(/\s+/g, '-').toLowerCase();
+        overlays[0]['layers'].push({
+            'name': d['name'],
+            'icon': `<a href="#" data-bs-toggle="modal" data-bs-target="#${modal_name}"><i style="font-size:14px" class="fa">&#xf05a;</i></a>`,
+            'layer': L.esri.featureLayer({
+                url: d['url'],
+                style: styleFunc,
+                onEachFeature: infoFunc, 
+                simplifyFactor: d.simplifyFactor || null,
+                where: d.filter || null,
+                precision: 5
                 
-            }else if(props.hasOwnProperty('threatF1')){
-                contents  = `<b>Habitat Blocks and Wildlife Corridors</b></br>`;
-                contents += `Size: ${props.ACRES.toFixed(1)} acres</br>`;  
-                contents += `Score: ${props.Fwght}</br>`;  
-            }else if(props.hasOwnProperty('CATEGORY')){
-                contents  = `<b>Physical Landscape Diversity Blocks</b></br>`;
-                contents += `Category: ${props.CATEGORY}</br>`;
-            }else if(props.hasOwnProperty('DWAID')){
-                contents = `<b>Deer Wintering Area</b></br>`;
-                contents += `Rating: ${props.Rating}</br>`;
-                contents += `Size: ${props.Acres.toFixed(1)} acres</br>`;
-            }else if(props.hasOwnProperty('NatComTxt')){
-                contents = `<b>Advisory Wetland</b></br>`;
-                contents += `Description: ${props.NatComTxt}</br>`;
-                contents += `Type: ${props.TYPE_1}</br>`;
-                // See https://anrweb.vt.gov/PubDocs/DEC/WSMD/Wetlands/Docs/wl_gis_standard.pdf for type interpretation
-            }else if(props.hasOwnProperty('poolStatus')){
-                contents = `<b>${props.poolStatus} Vernal Pool</b></br>`;
-                contents += `Identification Method: ${props.mappedMeth}</br>`;
-            }else{
-                console.log(props);
-            }
-
-            
-        }
-        this._div.innerHTML = `${contents}`;
-        this._div.style='background-color:rgba(256, 256, 256, 0.8);';
-    };
-
-    info.addTo(map);
-
-    // Add Parcels
-    function style(feature) {
-		return {
-			weight: 1,
-			opacity: 0.8,
-			color: '#979797',
-			fillOpacity: 0.0,
-			fillColor: 'white'
-		};
-	}
-
-	function highlightFeature(e) {
-		const layer = e.target;
-
-		layer.setStyle({
-			weight: 2,
-			color: '#666',
-			fillOpacity: 0.7
-		});
-
-		layer.bringToFront();
-
-		info.update(layer.feature.properties);
-	}
-
-    // var theLayer = L.geoJson(null);
-
-    // var ptUrl = 'https://mparno.github.io/tcc-maps/maps/TestPoints.geojson';
-    // $.getJSON(ptUrl, function(data) {
-    //     theLayer.addData(data);
-    // });
-
-    // theLayer.addTo(map);
-
-    
-    var parcelLinesURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_VTPARCELS_WM_NOCACHE_v2/FeatureServer/1";
-    var parcels = L.esri.featureLayer({
-        url: parcelLinesURL,
-        style: style,
-        onEachFeature: onEachFeature,
-        where:"TOWN='THETFORD'"
-    });
-
-    var townLinesURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_OPENDATA_Boundary_BNDHASH_line_SP_v1/FeatureServer/0";
-    var towns = L.esri.featureLayer({
-        url: townLinesURL,
-        style: {weight: 3,
-			opacity: 0.8,
-			color: '#979797'}
-    });
-
-    function conservedStyle(feature) {
-        // Metadata at https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_CADASTRAL_SP_NOCACHE_v1/MapServer/10
-        var color =  '#F1C40F';
-        var fillalpha = 0.2;
-        var edgealpha = 0.8;
-
-        // https://vcgi.vermont.gov/sites/vcgiupdate/files/doc_library/Protectedlands_Standard_v1.4.Final_.pdf
-        if(feature.properties.PUBACCESS==1){
-            color = '#196F3D';
-            fillalpha = 0.2;
-            edgealpha = 0.8;
-        }else if(feature.properties.PUBACCESS==2){
-            color = '#148F77';
-            fillalpha = 0.2;
-            edgealpha = 0.8;
-        }else if(feature.properties.PUBACCESS==3){
-            color = '#21618C';
-            fillalpha = 0.2;
-            edgealpha = 0.8;
-        }else if(feature.properties.PUBACCESS==4){
-            color = '#B7950B';
-            fillalpha = 0.2;
-            edgealpha = 0.8;
-        }
-
-		return {
-			weight: 1,
-			opacity: edgealpha,
-			color: color,
-			fillOpacity: fillalpha,
-			fillColor: color
-		};
-	}
-
-    function interiorForestStyle(feature){
-        return {weight:1, color:'#28B463', opacity:0.8, fillOpacity:0.2, fillColor:'#28B463'};
-    }
-    function connForestStyle(feature){
-        return {weight:1, color:'#73C6B6', opacity:0.8, fillOpacity:0.2, fillColor:'#73C6B6'};
-    }
-    function diversityBlockStyle(feature){
-        return {weight:1, color:'#5DADE2', opacity:0.8, fillOpacity:0.2, fillColor:'#5DADE2'};
-    }
-    function habitatBlockStyle(feature){
-        const colors = {1:'#F9EBEA', 2:'#F2D7D5', 3:'#E6B0AA', 4:'#D98880', 5:'#CD6155', 6:'#C0392B', 7:'#A93226', 8:'#922B21', 9:'#7B241C', 10:'#641E16'}
-        return {weight:1, color:colors[feature.properties.Fwghtrcl], opacity:0.8, fillOpacity:0.2, fillColor:colors[feature.properties.Fwghtrcl]};
-    }
-    function zoneStyle(feature){
-        const colors ={"COMMUNITY BUSINESS":"#756bb1", "VILLAGE RESIDENTIAL":"#bcbddc", "RURAL RESIDENTIAL":"#efedf5" }
-        return {weight:1, color:colors[feature.properties.DISTRICT], opacity:0.9, fillOpacity:0.4, fillColor:colors[feature.properties.DISTRICT]};
-    }
-    function wetlandStyle(feature){
-        return {weight:1, color:'#06cf82', opacity:0.8, fillOpacity:0.4, fillColor:'#06cf82'};
-    }
-    function surfwaterStyle(feature){
-        return {weight:1, color:'#344ceb', opacity:0.8, fillOpacity:0.4, fillColor:'#344ceb'};
-    }
-    function confVernalStyle(feature){
-        return {weight:1, color:'#2a7862', opacity:0.8, fillOpacity:0.8, fillColor:'#2a7862'};
-    }
-    function vernalStyle(feature){
-        return {weight:1, color:'#2a7862', opacity:0.8, fillOpacity:0.3, fillColor:'#2a7862'};
-    }
-
-    var zoningURL = "https://services1.arcgis.com/u6q3LNruiYmDjGX5/arcgis/rest/services/VTZONING_THETFORD_20110926_poly_zones/FeatureServer/0";
-    var zones = L.esri.featureLayer({
-        url: zoningURL,
-        style: zoneStyle,
-        onEachFeature: onEachFeature,
-    });
-
-    function deerWinteringStyle(feature){
-        return {weight:1, color:'#A04000', opacity:0.8, fillOpacity:0.2, fillColor:'#A04000'};
-    }
-
-    var conservedLandsURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_CADASTRAL_SP_NOCACHE_v1/MapServer/10";
-    var conservedLands = L.esri.featureLayer({
-        url: conservedLandsURL,
-        style: conservedStyle,
-        onEachFeature: onEachFeature,
-    });
-
-    var interiorBlockLinesURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/183";
-    var interiorBlocks = L.esri.featureLayer({
-        url: interiorBlockLinesURL,
-        style: interiorForestStyle,
-        onEachFeature: onEachFeature,
-    });
-
-    var surfwaterURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_ACT174CONSTRAINTS_SP_v2022/FeatureServer/60";
-    var surfwater = L.esri.featureLayer({
-        url: surfwaterURL,
-        style: surfwaterStyle,
-        onEachFeature: onEachFeature,
-    });
-    var wetlandsURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_ACT174CONSTRAINTS_SP_v2022/FeatureServer/120";
-    var wetlands = L.esri.featureLayer({
-        url: wetlandsURL,
-        style: wetlandStyle,
-        onEachFeature: onEachFeature,
-    });
-    
-    var confVernalURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_ACT174CONSTRAINTS_SP_v2022/FeatureServer/59";
-    var confVernals = L.esri.featureLayer({
-        url: confVernalURL,
-        style: confVernalStyle,
-        onEachFeature: onEachFeature,
-    });
-    var unconfVernalURL = "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_ACT174CONSTRAINTS_SP_v2022/FeatureServer/112";
-    var unconfVernals = L.esri.featureLayer({
-        url: unconfVernalURL,
-        style: vernalStyle,
-        onEachFeature: onEachFeature,
-    });
-    var vernals = L.layerGroup([confVernals, unconfVernals]);
-
-    var connBlockLinesURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/182"
-    var connBlocks = L.esri.featureLayer({
-        url: connBlockLinesURL,
-        style: connForestStyle,
-        onEachFeature: onEachFeature,
-    });
-
-    var diversityBlockURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/184";
-    var diversityBlocks = L.esri.featureLayer({
-        url: diversityBlockURL,
-        style: diversityBlockStyle,
-        onEachFeature: onEachFeature,
-    });
-
-    var habitatBlockURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/169";
-    var habitatBlocks = L.esri.featureLayer({
-        url: habitatBlockURL,
-        style: habitatBlockStyle,
-        onEachFeature: onEachFeature,
-    });
-
-    var deerWinteringURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_ECOLOGIC_SP_NOCACHE_v1/MapServer/171";
-    var deerWintering = L.esri.featureLayer({
-        url: deerWinteringURL,
-        style: deerWinteringStyle,
-        onEachFeature: onEachFeature
-    });
-
-    function agSoilsStyle(feature){
-        if (feature.properties.PRIME == 'Prime'){
-            return {weight:1, color:'#d6b024', opacity:0.8, fillOpacity:0.3, fillColor:'#d6b024'};
-        }else if (feature.properties.PRIME == 'Prime (b)'){
-            return {weight:1, color:'#dbc05a', opacity:0.8, fillOpacity:0.3, fillColor:'#dbc05a'};
-        }else if (feature.properties.PRIME == 'Prime (f)'){
-            return {weight:1, color:'#d9c88b', opacity:0.8, fillOpacity:0.3, fillColor:'#d9c88b'};
-        }else if(feature.properties.PRIME == 'Statewide'){
-            return {weight:1, color:'#916004', opacity:0.8, fillOpacity:0.3, fillColor:'#916004'};
-        }else if(feature.properties.PRIME=='Statewide (b)'){
-            return {weight:1, color:'#8a703f', opacity:0.8, fillOpacity:0.3, fillColor:'#8a703f'};
-        }else{
-            return {weight:1, color:'#d6b024', opacity:0.0, fillOpacity:0.0, fillColor:'#d6b024'};
-        }   
-    }
-    var agSoilsURL = "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_GEOLOGIC_SP_NOCACHE_v1/MapServer/2";
-    var agSoils = L.esri.featureLayer({
-        url: agSoilsURL,
-        style: agSoilsStyle,
-        simplifyFactor: 0.25,
-        onEachFeature: onEachFeature
-    });
-
-    function uvaStyle(feature){
-        return {weight:1, color:'#a10303',opacity:0.7, fillOpacity:0.2, fillColor:'#a10303'};
-    }
-
-    var uvaURL = "https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_CADASTRAL_SP_NOCACHE_v2/MapServer/41";
-    // var query = L.esri.query({url: uvaURL});
-    // query.intersects(L.latLngBounds(L.latLng(43.760314, -72.387519), L.latLng(43.882345, -72.178663)));
-    // query.run(function (error, featureCollection, response) {
-    // if (error) {
-    // console.log(error);
-    // return;
-    // }
-    // console.log('Found ' + featureCollection.features.length + ' features');
-    // });
-    
-    var uva = L.esri.featureLayer({
-        url: uvaURL,
-        style: uvaStyle,
-        onEachFeature: onEachFeature,
-        where:"1=0"
-    });
-
-    const spans = [];
-    parcels.query()
-    .where("TOWN='THETFORD'")
-        .run(function (error, featureCollection, response) {
-            if (error) {
-            console.log(error);
-            return;
-            }
-            for (var i =0; i<featureCollection.features.length; i++){
-                if(featureCollection.features[i].properties.GLIST_SPAN){
-                    spans.push("'" + featureCollection.features[i].properties.GLIST_SPAN + "'");
-                }
-            }
-            uva.setWhere("SPAN IN (" + spans.join(",") + ")");
+            }),
+            'active': d.active || false
         });
         
+        // add modal with detailed information about the layer
+        const modal = document.createElement("div");
+        modal.classList.add("modal");
+        modal.classList.add("fade");
+        modal.id = `${modal_name}`;
+        modal.role = "dialog";
+        const modalContent = `
+        <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modalTitle">${d['name']}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                <th scope="row">Description</th>
+                                <td>${d['description']}</td>
+                                </tr>
+                                <tr>
+                                <th scope="row">Source Organization</th>
+                                <td>${d['source']}</td>
+                                </tr>
+                                <tr>
+                                <th scope="row">Link</th>
+                                <td ><a href="${d['url']}">layer source</a></td>
+                                </tr>
+                            </tbody>
+                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+        modal.innerHTML = modalContent;
 
-    function agLandsStyle(style){
-        console.log(style);
-        return style;
+        document.body.appendChild(modal);
     };
-    var agLandsURL = "https://tiles.arcgis.com/tiles/BkFxaEFNwHqX3tAw/arcgis/rest/services/VECTOR_VCGI_AGRICULTURE2016_WM_v1/VectorTileServer";
-    var agLands = L.esri.Vector.vectorTileLayer(agLandsURL,
-        {style: agLandsStyle}
-        );
-
-	function resetHighlight(e) {
-		parcels.resetStyle(e.target);
-        conservedLands.resetStyle(e.target);
-        interiorBlocks.resetStyle(e.target);
-        connBlocks.resetStyle(e.target);
-        diversityBlocks.resetStyle(e.target);
-        habitatBlocks.resetStyle(e.target);
-        deerWintering.resetStyle(e.target);
-        zones.resetStyle(e.target);
-        wetlands.resetStyle(e.target);
-        surfwater.resetStyle(e.target);
-        confVernals.resetStyle(e.target);
-        unconfVernals.resetStyle(e.target);
-        agSoils.resetStyle(e.target);
-        uva.resetStyle(e.target);
-        //info.update();
-	}
-
-	function onEachFeature(feature, layer) {
-		layer.on({
-			mouseover: highlightFeature,
-			mouseout: resetHighlight
-		});
-	}
     
-    //interiorBlocks.addTo(map);
-    //connBlocks.addTo(map);
-    //parcels.addTo(map);
-    towns.addTo(map);
-
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(urlSearchParams.entries());
-    
-    if("template" in params){
-        if(params.template=='water'){
-            surfwater.addTo(map);
-            wetlands.addTo(map);
-            confVernals.addTo(map);
-        }else if(params.template=='forest'){
-            connBlocks.addTo(map);
-            interiorBlocks.addTo(map);
-        }else if(params.template=='political'){
-            conservedLands.addTo(map);
-            parcels.addTo(map);
-            zones.addTo(map);
-        }else if(params.template=='agriculture'){
-            agSoils.addTo(map);
-            agLands.addTo(map);
-            uva.addTo(map);
+    var baseLayers = [
+        {
+            'active': true,
+            'name': "World Streets",
+            'layer': worldStreetMap
+        },
+        {
+            'name': "Aerial Imagery",
+            'layer': imagery
+        },
+        {
+            'name': "Terrain",
+            'layer': hillshade
         }
-    }
-    //conservedLands.addTo(map);
-
-    L.control.zoom({position: 'topright'}).addTo(map);
+    ];
     
-    parcels.bringToFront();
-    conservedLands.bringToFront();
-    
-    // Add popup with information on click
-    var popup = L.popup();
-    var clickMarker;
-    var popupContents;
+    var panelLayers = new L.Control.PanelLayers(baseLayers, overlays, 
+    {
+        collapsibleGroups: true,
+        collapsed: true,
+        collapsible: true
+    });
 
-    function ProcessClick(lat,lon){
-
-        popupContents = "";
-        popupContents += "You what? You clicked the map at " + lat + ", " + lon + "</br>";
-        var pt = turf.point([lon, lat]);
-        
-        connBlocks.eachLayer(function (layer) {
-
-            //isInside =turf.inside(theMarker.toGeoJSON(), layer.toGeoJSON());
-
-            // Newer method in Turf
-            var isInside =turf.booleanPointInPolygon(pt, layer.toGeoJSON());
-
-            if (isInside){
-                popupContents += "connected forest block";
-            }
-        });
-
-        // if (clickMarker != undefined) {
-        //         map.removeLayer(clickMarker);
-        //     };
-        //     // if (newgeojsonLayer != undefined) {
-        //     //     map.removeLayer(newgeojsonLayer);
-        //     // };  
-
-
-        // clickMarker = L.marker([lat,lon]).addTo(map);  //added to show where you clicked.
-
-        // muniLayer.eachLayer(function (layer) {
-
-        //     //isInside =turf.inside(theMarker.toGeoJSON(), layer.toGeoJSON());
-
-        // // Newer method in Turf
-        // isInside =turf.booleanPointInPolygon((theMarker.toGeoJSON(), layer.toGeoJSON());
-
-        //     if (isInside){
-        //             a = "City/Town: " + layer.feature.properties.NAME;
-        //             console.log("City/Town: " + layer.feature.properties.NAME);
-        //     }
-        // });
-
-        // countyLayer.eachLayer(function (layer) {
-
-        //     isInside =turf.inside(theMarker.toGeoJSON(), layer.toGeoJSON());
-
-        //     if (isInside){
-        //             b = "County: " + layer.feature.properties.NAME;
-        //             console.log("County: " + layer.feature.properties.NAME);
-        //     }
-        // });
-
-        // stateLayer.eachLayer(function (layer) {
-
-        //     isInside =turf.inside(theMarker.toGeoJSON(), layer.toGeoJSON());
-
-        //     if (isInside){
-        //         console.log("State: " + layer.feature.properties.STATE_NAME);
-        //         c = "State: " + layer.feature.properties.STATE_NAME;
-        //     }
-        // })
-
-    }
-
-    function onMapClick(e) {
-        ProcessClick(e.latlng.lat, e.latlng.lng); 
-        popup
-            .setLatLng(e.latlng)
-            .setContent(popupContents)
-            .openOn(map);
-    }
-
-    //map.on('click', onMapClick);
-
-
-    var baseMaps = {
-    "OpenStreetMap": osm,
-    "VT Imagery": imagery,
-    "VT Hillshade" : hillshade
-    };
-
-    var mapOverlays = {
-    "Parcels": parcels,
-    "Development Zones": zones,
-    "Protected Lands": conservedLands,
-    "Advisory Wetlands": wetlands,
-    "Vernal Pools" : vernals,
-    "Surface Water" : surfwater,
-    "Interior Forest Blocks": interiorBlocks,
-    "Connected Forest Blocks": connBlocks,
-    "Physical Landscape Diversity Blocks": diversityBlocks,
-    "Habitat Blocks and Wildlife Corridors" : habitatBlocks,
-    "Deer Wintering Areas" : deerWintering,
-    "Agricultural Soils" : agSoils,
-    "Agricultural Lands" : agLands,
-    "Use Value Parcels" : uva,
-    };
-    
-    L.control.layers(baseMaps, mapOverlays, {position:'bottomright'}).addTo(map);
+    map.addControl(panelLayers);
 
   </script>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
