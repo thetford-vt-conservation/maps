@@ -80,7 +80,8 @@ See <a href="https://anr.vermont.gov/sites/anr/files/documents/Interior%20Forest
                             },
         "info-params": {'Acreage': 'habitat_block_area_acres', 'Priority':'Interior_Forest_Priority', 'Biophysical Region': 'biophysical_region_name', 'Percent Conserved': 'conserved_land_pct', 'Vernal Pool Count':'vernal_pool_count'},
         "filter": `Interior_Forest='Interior Forest'`,
-        'simplifyFactor': 0.2,
+        'simplifyFactor': 0.3,
+        'precision': 7,
     },
     {
         "name": "Forest Connectivity Blocks",
@@ -100,19 +101,22 @@ See <a href="https://anr.vermont.gov/sites/anr/files/documents/Connectivity%20Bl
                             },
         "info-params": {'Acreage': 'habitat_block_area_acres', 'Priority':'Connectivity_Blocks_Priority', 'Biophysical Region': 'biophysical_region_name', 'Percent Conserved': 'conserved_land_pct', 'Vernal Pool Count':'vernal_pool_count'},
         "filter": `Connectivity_Blocks='Connectivity Block'`,
-        'simplifyFactor': 0.2,
+        'simplifyFactor': 0.3,
+        'precision': 4,
     },
     {
         "name": "Surface Water",
         "source": '<a href="https://vtfishandwildlife.com/conserve/vermont-conservation-design">Vermont Conservation Design</a>',
         "url": "https://anrmaps.vermont.gov/arcgis/rest/services/EGC_Services/MAP_ANR_BIOFINDER4_WM_NOCACHE/MapServer/0",
         "info-name":"Highest Priority Surface Water",
-        "description": `This layer contains the highest priority areas with "Vermont’s network of lakes, ponds, rivers and streams, and their associated
+        "description": `This layer contains the highest priority areas with "Vermont's network of lakes, ponds, rivers and streams, and their associated
 riparian zones, valley bottoms, and river corridors".  For more information on this data and its ecological importance, consult the Vermont Conservation 
  Design's <a href="https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Surface-Waters-and-Riparian-Areas.pdf">Surface Waters and Riparian Areas</a> documentation. `,
         "info-params": {},
         "style": {weight:1, color:'#344ceb', opacity:0.8, fillOpacity:0.4, fillColor:'#344ceb'},
-        "filter": `SurfaceWaterPriority='HIGHEST PRIORITY'`
+        "filter": `SurfaceWaterPriority='HIGHEST PRIORITY'`,
+        'simplifyFactor': 0.3,
+        'precision': 5
     },
     {
         "name": "Vernal Pools",
@@ -126,18 +130,22 @@ They typically have no permanent inlet or outlet streams and have very small wat
 vernal pools, which have been field verified.`,
         "info-params": {},
         "style": {weight:1, color:'#2a7862', opacity:0.8, fillOpacity:0.8, fillColor:'#2a7862'},
-        "filter": `VernalPools='HIGHEST PRIORITY'`
+        "filter": `VernalPools='HIGHEST PRIORITY'`,
+        'simplifyFactor': 0.2,
+        'precision': 4
     },
     {
         "name": "Agricultural Soils",
         "source": `<a href="https://vcgi.vermont.gov/">VT Center for Geographic Information</a>`,
-        "url": "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_GEOLOGIC_SP_NOCACHE_v1/MapServer/2",
+        "url": "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_OPENDATA_Geologic_SOAG_poly_SP_v1/FeatureServer/0",
         "info-name":"Agricultural Soil",
         "description": `A subset of the USGS <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-survey-geographic-database-ssurgo">"Soil Survey Geographic Database"</a>
         created by the state of Vermont to identify prime agricultural soils in the state.`,
         "info-params": {'Prime Type': 'PRIME'},
         "style": {weight:1, color:'#d6b024', opacity:0.8, fillOpacity:0.3, fillColor:'#d6b024'},
+        "filter": "1=1",
         'simplifyFactor': 0.2,
+        'precision': 7,
     },
     {
         "name": "Use Value Appraisal",
@@ -146,7 +154,10 @@ vernal pools, which have been field verified.`,
         "style": {weight:1, color:'#a10303',opacity:0.7, fillOpacity:0.2, fillColor:'#a10303'},
         "description": `Parcels enrolled in Vermont's <a href="https://fpr.vermont.gov/forest/UseValueAppraisal">use value appraisal program</a> (i.e., parcels "in current use").`,
         "info-params": {'SPAN':'SPAN', 'Entry Year':'ENTRYYEAR'},
-        "info-name": "Parcel in Current Use"
+        "info-name": "Parcel in Current Use",
+        "filter": "1=1",
+        'simplifyFactor': 0.1,
+        'precision': 6
     },
     {
         "name": "Wetlands",
@@ -161,23 +172,10 @@ vernal pools, which have been field verified.`,
         by the Vermont Wetland Rules."  Additional information can be found in the 
         <a href="https://anrmaps.vermont.gov/websites/WetlandScreening/Docs/2021%20Mapping%20Guidance%20VSWI.pdf">data description</a> provided by the Vermont Wetlands Program. `,
         "info-params": {'Class':'CLASS'},
-        "info-name": "Wetland"
-    },
-    {
-        "name": "Highway Crossings",
-        "source": `<a href="https://vcgi.vermont.gov/">VT Center for Geographic Information</a>`,
-        "url": "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_ECOLOGIC_SP_NOCACHE_v1/MapServer/8",
-        "description": `Wildlife crossing ares across state highways. From the <a href="https://geodata.vermont.gov/datasets/VCGI::vt-wildlife-crossing-value/about">VCGI documentation</a>, "The values of the [wildlife crossing value] WCV range from 1-10, ten being the
-         most signifigant and 1 being the least signifigant. The relative ranking systems allows for relative priority areas within 
-         different regions. This provides a roadway specific description of potential WLH and may be useful for purposes of 
-         transportation planning and identification of sites that may be priority areas for wildlife crossing structures. 
-         The Wildlife Linkage Habitat Analysis uses landscape scale data to identify or predict the location of potentially significant
-          wildlife linkage habitats (WLH) associated with state roads throughout Vermont. For purposes of this project, 
-          WLH is a term used to describe those habitats associated with Vermont roads where wildlife move, migrate, and access 
-          various other habitats and parts of their range (similar to, but broader than, wildlife corridors)."`,
-        "style": {color: '#e34a33', weight: 3, opacity: 1.0},
-        "info-params": {"Crossing Value": "WCV_MASTER"},
-        "info-name": "Wildlife Crossing"
+        "info-name": "Wetland",
+        "filter": "1=1",
+        'simplifyFactor': 0.2,
+        'precision': 5
     },
     {
         "name": "Other Wildlife Crossings",
@@ -187,7 +185,9 @@ vernal pools, which have been field verified.`,
         "description": `Areas on smaller roads that have been identified identified by the Vermont Conservation Design as locations where wildlife are likely to cross.  More information can be found in the <a href="https://anr.vermont.gov/sites/anr/files/documents/Wildlife%20Road%20Crossings%20Summary.pdf?_gl=1*1rebr*_ga*MTM3OTc4OTc2OC4xNzI1NDkzMTMy*_ga_V9WQH77KLW*MTczMjQ3ODc4My41LjAuMTczMjQ3OTE1MS4wLjAuMA">VCD documentation</a>.`,
         "info-params": {},
         "style": {color: '#e34a33', weight: 1, opacity: 1.0},
-        "filter": ` WildlifeRoadCrossings='HIGHEST PRIORITY'`
+        "filter": ` WildlifeRoadCrossings='HIGHEST PRIORITY'`,
+        'simplifyFactor': 0.1,
+        'precision': 4
     },
     {
         "name": "Deer Wintering Areas",
@@ -203,17 +203,22 @@ vernal pools, which have been field verified.`,
          are found in mixed forest with a strong softwood component or even on found west facing hardwood slopes in conjunction 
          with softwood cover." More information in VT ANR's <a href="https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Learn%20More/LandownersGuide/8.Deer_.pdf">Deer Wintering Management</a> document.`,
         "info-params": {"Acreage": "Acres", "Rating":"Rating"},
-        "info-name": "Deer Wintering Area"
+        "info-name": "Deer Wintering Area",
+        "filter": "1=1",
+        'simplifyFactor': 0.2,
+        'precision': 5
     },
     {
         "name": "Thetford Zoning Districts",
-        "source": `<a href="https://www.trorc.org/">Two Rivers Ottaquechee Region Commission (TRORC)`,
+        "source": `<a href="https://www.trorc.org/">Two Rivers Ottauquechee Regional Commission (TRORC)`,
         "url": "https://services1.arcgis.com/u6q3LNruiYmDjGX5/arcgis/rest/services/VTZONING_THETFORD_20110926_poly_zones/FeatureServer/0",
         "style": {weight:1, color:'#756bb1', opacity:0.9, fillOpacity:0.4, fillColor:'#756bb1'},
         "description": `Thetford zoning districts.  Any areas not covered by these zones is considered "Rural Residential".  More information is available from the <a href="https://www.thetfordvt.gov/departments/zoning">Thetford Zoning website</a>.`,
         "info-params": {"Type": "DISTRICT"},
         "info-name": "Development Zone",
-        "filter": "NOT (DISTRICT ='RURAL RESIDENTIAL')"
+        "filter": "NOT (DISTRICT ='RURAL RESIDENTIAL')",
+        'simplifyFactor': 0.1,
+        'precision': 6
     },
     {
         "name": "Parcels",
@@ -223,28 +228,52 @@ vernal pools, which have been field verified.`,
         "description": "Boundaries of parcels in Thetford.",
         "filter": "TOWN='THETFORD'",
         "info-params": {"SPAN": "GLIST_SPAN", "Address": "E911ADDR"},
-        "info-name": "Parcel"
+        "info-name": "Parcel",
+        'simplifyFactor': 0.1,
+        'precision': 6
     },
     {
         "name": "Protected Lands",
-        "source": ``,
+        "source": `<a href="https://vcgi.vermont.gov/">VT Center for Geographic Information</a>`,
         "url": "https://maps.vcgi.vermont.gov/arcgis/rest/services/EGC_services/OPENDATA_VCGI_CADASTRAL_SP_NOCACHE_v1/MapServer/10",
         "description": `Highlights land that is protected through conservation easements or public ownership.  
-        More information, includign the definitions of public access type numbers, can be found in the <a href="https://vcgi.vermont.gov/sites/vcgiupdate/files/doc_library/Protectedlands_Standard_v1.4.Final_.pdf">
+        More information, including the definitions of public access type numbers, can be found in the <a href="https://vcgi.vermont.gov/sites/vcgiupdate/files/doc_library/Protectedlands_Standard_v1.4.Final_.pdf">
         Vermont Protected Lands Database</a>.`,
         "style": {weight: 1, opacity: 0.8, color: '#F1C40F', fillOpacity: 0.4, fillColor: '#F1C40F'},
         "info-params": {"Name": "NAME", "Public Access Type": "PUBACCESS", "Protection Type": "PTYPE1"},
-        "info-name": "Protected Land"
+        "info-name": "Protected Land",
+        "filter": "1=1",
+        'simplifyFactor': 0.2,
+        'precision': 5
     },
     {   
         "name": "Town Boundaries",
         "source": `<a href="https://vcgi.vermont.gov/">VT Center for Geographic Information</a>`,
         "url": "https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_OPENDATA_Boundary_BNDHASH_line_SP_v1/FeatureServer/0",
-        "style": {weight: 3, opacity: 0.8, color: '#979797'},
+        "style": {weight: 2, opacity: 0.6, color: '#979797'},
         "description": "Political boundaries between towns.",
+        "info-params": {},
+        "info-name": "Town Boundary",
         "active": true,
+        "filter": "1=1",
+        'simplifyFactor': 0.1,
+        'precision': 4
     },
+     {
+         "name": "Amphibian Road Crossing",
+         "source": ``,
+         "url": "",
+         "file": "data/AmphibianCrossings.geojson",
+        "style": {weight: 1, opacity: 0.8, color: '#e34a33', fillOpacity: 0.0, fillColor: 'white'},
+        "description": "Amphibian road crossings.",
+        "info-params": {},
+        "info-name": "Amphibian Road Crossing",
+        "filter": "1=1",
+        'simplifyFactor': 0.1,
+        'precision': 4
+    }
     ];
+
 
 
     var overlays = [{group: "Overlays", collapsed: true, layers: []}];
@@ -293,19 +322,45 @@ vernal pools, which have been field verified.`,
         }
         
         modal_name = d['name'].replace(/\s+/g, '-').toLowerCase();
-        overlays[0]['layers'].push({
-            'name': d['name'],
-            'icon': `<a href="#" data-bs-toggle="modal" data-bs-target="#${modal_name}"><i style="font-size:14px" class="fa">&#xf05a;</i></a>`,
-            'layer': L.esri.featureLayer({
+        
+        // Create the layer with static settings
+        let layer;
+        if (d['url'] && d['url'].trim() !== '') {
+            // Use Esri feature layer for remote services
+            layer = L.esri.featureLayer({
                 url: d['url'],
                 style: styleFunc,
                 onEachFeature: infoFunc, 
-                simplifyFactor: d.simplifyFactor || null,
-                where: d.filter || null,
-                precision: 5
-                
-            }),
-            'active': d.active || false
+                simplifyFactor: d.simplifyFactor,
+                where: d.filter,
+                precision: d.precision,
+            });
+        } else if (d['file']) {
+            // Use GeoJSON layer for local files
+            layer = L.geoJSON(null, {
+                style: styleFunc,
+                onEachFeature: infoFunc
+            });
+            
+            // Load the GeoJSON file
+            fetch(d['file'])
+                .then(response => response.json())
+                .then(data => {
+                    layer.addData(data);
+                })
+                .catch(error => {
+                    console.error('Error loading GeoJSON file:', error);
+                });
+        } else {
+            console.error('Layer "' + d['name'] + '" has neither URL nor file specified');
+        }
+
+        overlays[0]['layers'].push({
+            'name': d['name'],
+            'icon': `<a href="#" data-bs-toggle="modal" data-bs-target="#${modal_name}"><i style="font-size:14px" class="fa">&#xf05a;</i></a>`,
+            'layer': layer,
+            'active': d.active || false,
+            'layerData': d
         });
         
         // add modal with detailed information about the layer
@@ -366,7 +421,7 @@ vernal pools, which have been field verified.`,
     
     var panelLayers = new L.Control.PanelLayers(baseLayers, overlays, 
     {
-        collapsibleGroups: true,
+        collapsibleGroups: false,
         collapsed: true,
         collapsible: true
     });
