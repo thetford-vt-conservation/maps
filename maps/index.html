@@ -261,13 +261,24 @@ vernal pools, which have been field verified.`,
     },
      {
          "name": "Amphibian Road Crossing",
-         "source": ``,
-         "url": "",
-         "file": "data/AmphibianCrossings.geojson",
-        "style": {weight: 1, opacity: 0.8, color: '#e34a33', fillOpacity: 0.0, fillColor: 'white'},
-        "description": "Amphibian road crossings.",
-        "info-params": {},
+         "source": `<a href="https://www.thetfordvt.gov/government/conservation-commission">Thetford Natural Resource Inventory (NRI)</a>`,
+         "url": "https://mparno.github.io/tcc-maps/maps/data/AmphibianCrossings.geojson",
+        "style": {weight: 4, opacity: 0.8, color: '#e34a33', fillOpacity: 0.0, fillColor: 'white'},
+        "description": "Amphibian Road Crossings.",
+        "info-params": {"Connectivity": "AmphibConnectivity", "Number of Species": "NumberSpeciesObserved", "Total Observations": "TotalObservations"},
         "info-name": "Amphibian Road Crossing",
+        "filter": "1=1",
+        'simplifyFactor': 0.1,
+        'precision': 4
+    },
+    {
+         "name": "Wildlife Road Crossing",
+         "source": `<a href="https://www.thetfordvt.gov/government/conservation-commission">Thetford Natural Resource Inventory (NRI)</a>`,
+         "url": "https://mparno.github.io/tcc-maps/maps/data/WildlifeCrossings.geojson",
+        "style": {weight: 4, opacity: 0.8, color: '#e34a33', fillOpacity: 0.0, fillColor: 'white'},
+        "description": "Wildlife Road Crossings.",
+        "info-params": {"Connectivity": "AmphibConnectivity", "Number of Species": "NumberSpeciesObserved", "Total Observations": "TotalObservations"},
+        "info-name": "Wildlife Road Crossing",
         "filter": "1=1",
         'simplifyFactor': 0.1,
         'precision': 4
@@ -325,7 +336,28 @@ vernal pools, which have been field verified.`,
         
         // Create the layer with static settings
         let layer;
-        if (d['url'] && d['url'].trim() !== '') {
+        if (d['url'] && d['url'].endsWith('.geojson')) {
+            // Use GeoJSON layer for GeoJSON URLs
+            layer = L.geoJSON(null, {
+                style: styleFunc,
+                onEachFeature: infoFunc
+            });
+            
+            // Load the GeoJSON file
+            fetch(d['url'])
+                .then(response => response.json())
+                .then(data => {
+                    layer.addData(data);
+                    
+                    // If this layer should be active by default, add it to the map
+                    if (d.active) {
+                        layer.addTo(map);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading GeoJSON file:', error);
+                });
+        } else if (d['url'] && d['url'].trim() !== '') {
             // Use Esri feature layer for remote services
             layer = L.esri.featureLayer({
                 url: d['url'],
@@ -335,26 +367,11 @@ vernal pools, which have been field verified.`,
                 where: d.filter,
                 precision: d.precision,
             });
-        } else if (d['file']) {
-            // Use GeoJSON layer for local files
-            layer = L.geoJSON(null, {
-                style: styleFunc,
-                onEachFeature: infoFunc
-            });
-            
-            // Load the GeoJSON file
-            fetch(d['file'])
-                .then(response => response.json())
-                .then(data => {
-                    layer.addData(data);
-                })
-                .catch(error => {
-                    console.error('Error loading GeoJSON file:', error);
-                });
         } else {
             console.error('Layer "' + d['name'] + '" has neither URL nor file specified');
         }
 
+        // Add layer to overlays array
         overlays[0]['layers'].push({
             'name': d['name'],
             'icon': `<a href="#" data-bs-toggle="modal" data-bs-target="#${modal_name}"><i style="font-size:14px" class="fa">&#xf05a;</i></a>`,
