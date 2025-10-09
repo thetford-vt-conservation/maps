@@ -45,6 +45,83 @@
         display: none;
     }
     
+    /* Custom collapsible panel styling */
+    .custom-collapsible-panel {
+        position: relative;
+    }
+    
+    .custom-collapsible-panel .leaflet-panel-layers-list {
+        transition: all 0.3s ease;
+    }
+    
+    .custom-collapsible-panel.collapsed .leaflet-panel-layers-list {
+        display: none;
+    }
+    
+    /* Toggle button */
+    .custom-collapsible-panel .hamburger-toggle {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .custom-collapsible-panel .hamburger-toggle:hover {
+        background: #f0f0f0;
+    }
+    
+    /* Minimize icon (when panel is open) */
+    .custom-collapsible-panel .hamburger-toggle.minimize {
+        font-size: 18px;
+    }
+    
+    /* Hamburger lines (when panel is collapsed) */
+    .custom-collapsible-panel.collapsed .hamburger-toggle span {
+        width: 18px;
+        height: 2px;
+        background: #333;
+        margin: 2px 0;
+        transition: 0.3s;
+    }
+    
+    .custom-collapsible-panel.collapsed .hamburger-toggle.minimize {
+        display: none;
+    }
+    
+    .custom-collapsible-panel.collapsed .hamburger-toggle.hamburger {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Collapsed state - show only hamburger */
+    .custom-collapsible-panel.collapsed {
+        width: 55px !important;
+        height: 55px !important;
+        min-width: 55px !important;
+        min-height: 55px !important;
+    }
+    
+    .custom-collapsible-panel.collapsed .leaflet-panel-layers-title {
+        display: none;
+    }
+    
+    .custom-collapsible-panel.collapsed .hamburger-toggle {
+        position: static;
+        margin: 8px;
+    }
   </style>
 
 </head>
@@ -475,11 +552,41 @@ vernal pools, which have been field verified.`,
     var panelLayers = new L.Control.PanelLayers(baseLayers, overlays, 
     {
         collapsibleGroups: true,
-        collapsed: true,
+        collapsed: false,
         collapsible: true,
+        className: 'custom-collapsible-panel'
     });
 
     map.addControl(panelLayers);
+
+    // Add toggle button functionality
+    setTimeout(() => {
+        const panel = document.querySelector('.custom-collapsible-panel');
+        if (panel) {
+            // Create toggle button
+            const toggleButton = document.createElement('div');
+            toggleButton.className = 'hamburger-toggle minimize';
+            toggleButton.innerHTML = '−'; // Minimize symbol
+            
+            // Add click handler
+            toggleButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                panel.classList.toggle('collapsed');
+                
+                // Update button content and class
+                if (panel.classList.contains('collapsed')) {
+                    toggleButton.className = 'hamburger-toggle hamburger';
+                    toggleButton.innerHTML = '<span></span><span></span><span></span>';
+                } else {
+                    toggleButton.className = 'hamburger-toggle minimize';
+                    toggleButton.innerHTML = '−';
+                }
+            });
+            
+            // Insert toggle button
+            panel.appendChild(toggleButton);
+        }
+    }, 100);
 
   </script>
 
