@@ -181,6 +181,30 @@ See <a href="https://anr.vermont.gov/sites/anr/files/documents/Connectivity%20Bl
         "filter": `Connectivity_Blocks='Connectivity Block'`,
         'simplifyFactor': 0.3,
         'precision': 4,
+    },
+    {
+        "name": "Floodplain Forest",
+        "source": `<a href="https://www.thetfordvt.gov/government/conservation-commission">Thetford Natural Resource Inventory (NRI)</a>`,
+        "url": "https://thetford-vt-conservation.github.io/maps/data/NG_FloodplainForest.geojson",
+        "description": "Floodplain forests identified through the Thetford Natural Resource Inventory.",
+        "info-name": "Floodplain Forest",
+        "info-params": {"Acres": "Acres"},
+        "style": {weight: 1, color: '#8B4513', opacity: 0.8, fillOpacity: 0.4, fillColor: '#8B4513'},
+        "filter": "1=1",
+        'simplifyFactor': 0.2,
+        'precision': 5
+    },
+    {
+        "name": "Mast Areas",
+        "source": `<a href="https://www.thetfordvt.gov/government/conservation-commission">Thetford Natural Resource Inventory (NRI)</a>`,
+        "url": "https://thetford-vt-conservation.github.io/maps/data/NG_MastAreas.geojson",
+        "description": "Mast-producing forest areas identified through the Thetford Natural Resource Inventory.",
+        "info-name": "Mast Area",
+        "info-params": {},
+        "style": {weight: 1, color: '#D2691E', opacity: 0.8, fillOpacity: 0.4, fillColor: '#D2691E'},
+        "filter": "1=1",
+        'simplifyFactor': 0.2,
+        'precision': 5
     }],
     "Water":[
     {
@@ -199,17 +223,16 @@ riparian zones, valley bottoms, and river corridors".  For more information on t
     },
     {
         "name": "Vernal Pools",
-        "source": '<a href="https://vtfishandwildlife.com/conserve/vermont-conservation-design">Vermont Conservation Design</a>',
-        "url": "https://anrmaps.vermont.gov/arcgis/rest/services/EGC_Services/MAP_ANR_BIOFINDER4_WM_NOCACHE/MapServer/2",
-        "info-name":"Vernal Pools",
-        "description": `Possible vernal pools with a 650ft buffer.  From the 
+         "source": `<a href="https://www.thetfordvt.gov/government/conservation-commission">Thetford Natural Resource Inventory (NRI)</a>`,
+         "url": "https://thetford-vt-conservation.github.io/maps/data/NG_ConfirmedVernalPools.geojson",
+         "info-name":"Vernal Pools",
+        "description": `Confirmed vernal pools from Phase 1 of the Thetford Natural Resource Inventory.  From the 
         <a href="https://anr.vermont.gov/sites/anr/files/documents/Vernal%20Pools%20Summary.pdf?_gl=1*f5q9ds*_ga*MTM3OTc4OTc2OC4xNzI1NDkzMTMy*_ga_V9WQH77KLW*MTczMjQ3ODc4My41LjAuMTczMjQ3ODc4NS4wLjAuMA">Vermont Conservation Design documentation</a>, 
 " Vernal Pools are small (generally less than oneacre), ephemeral pools that occur in natural basins within upland forests. 
-They typically have no permanent inlet or outlet streams and have very small watersheds."  This layer shows only the "highest priority" 
-vernal pools, which have been field verified.`,
+They typically have no permanent inlet or outlet streams and have very small watersheds."`,
         "info-params": {},
-        "style": {weight:1, color:'#2a7862', opacity:0.8, fillOpacity:0.8, fillColor:'#2a7862'},
-        "filter": `VernalPools='HIGHEST PRIORITY'`,
+        "style": {radius: 8, fillColor: '#28a745', color: '#28a745', weight: 2, opacity: 0.9, fillOpacity: 0.7},
+        "filter": `1=1`,
         'simplifyFactor': 0.2,
         'precision': 4
     },
@@ -270,9 +293,15 @@ vernal pools, which have been field verified.`,
          "name": "Amphibian Road Crossings",
          "source": `<a href="https://www.thetfordvt.gov/government/conservation-commission">Thetford Natural Resource Inventory (NRI)</a>`,
          "url": "https://thetford-vt-conservation.github.io/maps/data/AmphibianCrossings.geojson",
-        "style": {weight: 4, opacity: 0.8, color: '#e34a33'},
+        "categorical-style": {"key": "AmphibCriteriaSum",
+                              0.5: {weight: 4, opacity: 0.8, color: '#8b1a1a'},
+                              1.0: {weight: 4, opacity: 0.8, color: '#e67300', dashArray: '5, 5'},
+                              1.5: {weight: 5, opacity: 0.8, color: '#e67300'},
+                              2.0: {weight: 6, opacity: 0.9, color: '#0d6e6e'},
+                              null: {weight: 0, opacity: 0.0}
+                            },
         "description": "Amphibian Road Crossings.",
-        "info-params": {"Connectivity": "AmphibConnectivity", "Number of Species": "NumberSpeciesObserved", "Total Observations": "TotalObservations"},
+        "info-params": {"Connectivity": "AmphibConnectivity", "Number of Species": "NumberSpeciesObserved", "Total Observations": "TotalObservations", "Criteria Sum": "AmphibCriteriaSum"},
         "info-name": "Amphibian Road Crossing",
         "filter": "1=1",
         'simplifyFactor': 0.1,
@@ -282,7 +311,13 @@ vernal pools, which have been field verified.`,
          "name": "Wildlife Road Crossings",
          "source": `<a href="https://www.thetfordvt.gov/government/conservation-commission">Thetford Natural Resource Inventory (NRI)</a>`,
          "url": "https://thetford-vt-conservation.github.io/maps/data/WildlifeCrossings.geojson",
-         "style": {weight: 3, opacity: 0.8, color: '#ff8c00'},
+        "categorical-style": {"key": "OverallConnectivity",
+                              "Well Above Average": {weight: 5, opacity: 0.9, color: '#0d6e6e'},
+                              "Above Average": {weight: 3, opacity: 0.8, color: '#0d6e6e', dashArray: '5, 5'},
+                              "Average": {weight: 2, opacity: 0.8, color: '#e67300'},
+                              "Below Average": {weight: 2, opacity: 0.8, color: '#8b1a1a', dashArray: '5, 5'},
+                              "Well Below Average": {weight: 2, opacity: 0.8, color: '#8b1a1a'}
+                            },
         "description": "Wildlife Road Crossings.",
         "info-params": {"Target Species": "TargetSpeciesList", "Importance": "Importance", "Overall Connectivity": "OverallConnectivity"},
         "info-name": "Wildlife Road Crossing",
@@ -294,9 +329,17 @@ vernal pools, which have been field verified.`,
          "name": "Underpass Road Crossings",
          "source": `<a href="https://www.thetfordvt.gov/government/conservation-commission">Thetford Natural Resource Inventory (NRI)</a>`,
          "url": "https://thetford-vt-conservation.github.io/maps/data/UnderpassCrossings.geojson",
-        "style": {weight: 4, opacity: 0.8, color: '#e34a33', fillOpacity: 0.0, fillColor: 'white'},
-        "description": "Wildlife Road Crossings.",
-        "info-params": {"Size": "SizeClass", "Type":"StructureType", "Barrier Severity (Small)":"BarrierSeverity_Small", "Barrier Severity (Medium)":"BarrierSeverity_Medium"},
+        "categorical-style": {"key": "OverallUnderpassFunction",
+                              "Excellent Dry Passage": {radius: 8, fillColor: '#28a745', color: '#28a745', weight: 2, opacity: 0.9, fillOpacity: 0.7},
+                              "Excellent Dry Passage w/ Terrestrial Function": {radius: 8, fillColor: '#28a745', color: '#28a745', weight: 2, opacity: 0.9, fillOpacity: 0.7},
+                              "Dry Passage": {radius: 6, fillColor: '#7cb342', color: '#7cb342', weight: 2, opacity: 0.8, fillOpacity: 0.6},
+                              "Dry Passage w/ Terrestrial Function": {radius: 6, fillColor: '#7cb342', color: '#7cb342', weight: 2, opacity: 0.8, fillOpacity: 0.6},
+                              "No Dry Passage w/ Frozen or Semi-Aquatic Function": {radius: 4, fillColor: '#ffc107', color: '#ffc107', weight: 2, opacity: 0.8, fillOpacity: 0.6},
+                              "No Dry Passage": {radius: 4, fillColor: '#ffc107', color: '#ffc107', weight: 2, opacity: 0.8, fillOpacity: 0.6},
+                              "Limited Potential. Dry Passage Not Assessed": {opacity: 0, fillOpacity: 0}
+                            },
+        "description": "Underpass Road Crossings.",
+        "info-params": {"Size": "SizeClass", "Type":"StructureType", "Barrier Severity (Small)":"BarrierSeverity_Small", "Barrier Severity (Medium)":"BarrierSeverity_Medium", "Function": "OverallUnderpassFunction"},
         "info-name": "Underpass Road Crossing",
         "filter": "1=1",
         'simplifyFactor': 0.1,
@@ -450,8 +493,15 @@ vernal pools, which have been field verified.`,
             let layer;
             if (d['url'] && d['url'].endsWith('.geojson')) {
                 // Use GeoJSON layer for GeoJSON URLs
+                // Define pointToLayer function for point geometries with circle markers
+                let pointToLayerFunc = function(feature, latlng) {
+                    let style = styleFunc(feature);
+                    return L.circleMarker(latlng, style);
+                };
+
                 layer = L.geoJSON(null, {
                     style: styleFunc,
+                    pointToLayer: pointToLayerFunc,
                     onEachFeature: infoFunc
                 });
                 
