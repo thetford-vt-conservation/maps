@@ -122,6 +122,52 @@
         position: static;
         margin: 8px;
     }
+
+    #fullscreen-btn {
+        position: fixed;
+        bottom: 20px;
+        left: 10px;
+        width: 34px;
+        height: 34px;
+        background: white;
+        border: 2px solid rgba(0,0,0,0.2);
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+        font-size: 18px;
+        line-height: 1;
+        color: #333;
+        user-select: none;
+    }
+
+    #fullscreen-btn:hover {
+        background: #f0f0f0;
+    }
+
+    #fullscreen-btn::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 38px;
+        left: 0;
+        background: rgba(0,0,0,0.75);
+        color: white;
+        font-size: 12px;
+        font-family: Arial, Helvetica, sans-serif;
+        white-space: nowrap;
+        padding: 4px 8px;
+        border-radius: 3px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s;
+    }
+
+    #fullscreen-btn:hover::after {
+        opacity: 1;
+    }
   </style>
 
 </head>
@@ -129,6 +175,7 @@
 
   <div id="map"></div>
   <div id="info-box"></div>
+  <button id="fullscreen-btn" data-tooltip="Make Fullscreen">⛶</button>
   <script>
 
   // initialize the map
@@ -637,6 +684,47 @@ They typically have no permanent inlet or outlet streams and have very small wat
             panel.appendChild(toggleButton);
         }
     }, 100);
+
+    // Fullscreen button
+    (function() {
+        var btn = document.getElementById('fullscreen-btn');
+        var fsEnabled = document.fullscreenEnabled ||
+                        document.webkitFullscreenEnabled ||
+                        document.mozFullScreenEnabled;
+
+        if (!fsEnabled) {
+            btn.style.display = 'none';
+            return;
+        }
+
+        function isFullscreen() {
+            return !!(document.fullscreenElement ||
+                      document.webkitFullscreenElement ||
+                      document.mozFullScreenElement);
+        }
+
+        function updateBtn() {
+            btn.textContent = isFullscreen() ? '✕' : '⛶';
+            btn.dataset.tooltip = isFullscreen() ? 'Exit Fullscreen' : 'Make Fullscreen';
+        }
+
+        btn.addEventListener('click', function() {
+            if (isFullscreen()) {
+                (document.exitFullscreen ||
+                 document.webkitExitFullscreen ||
+                 document.mozCancelFullScreen).call(document);
+            } else {
+                var el = document.documentElement;
+                (el.requestFullscreen ||
+                 el.webkitRequestFullscreen ||
+                 el.mozRequestFullScreen).call(el);
+            }
+        });
+
+        document.addEventListener('fullscreenchange', updateBtn);
+        document.addEventListener('webkitfullscreenchange', updateBtn);
+        document.addEventListener('mozfullscreenchange', updateBtn);
+    })();
 
   </script>
 
