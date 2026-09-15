@@ -1,0 +1,56 @@
+{
+  "__tiered__": {
+    "name": "Tiered Map",
+    "description": "Every contributing layer combined into a single map of ecological importance. Each area takes the importance of the highest-ranked layer covering it. Hover any area to see which layers contribute there."
+  },
+  "custom_3b424511": {
+    "name": "Amphibian Road Crossings",
+    "goal": "",
+    "motivation": "Amphibian would move 600ft max"
+  },
+  "custom_f986b655": {
+    "name": "Confirmed Vernal Pools",
+    "goal": "",
+    "motivation": "Buffer needs needs to be verified."
+  },
+  "custom_0d7d7d49": {
+    "name": "Floodplain Forests and Riparian Connectivity",
+    "goal": "",
+    "motivation": ""
+  },
+  "custom_c2ea57e7": {
+    "name": "Natural Communities",
+    "goal": "",
+    "motivation": ""
+  },
+  "custom_0cf3cd91": {
+    "name": "Threatened Species",
+    "goal": "",
+    "motivation": ""
+  },
+  "custom_0a14cdde": {
+    "name": "Top Tier Crossings",
+    "goal": "",
+    "motivation": ""
+  },
+  "custom_2bbc6497": {
+    "name": "Wetlands",
+    "goal": "",
+    "motivation": ""
+  },
+  "custom_77a73964": {
+    "name": "Highest Priority Connectivity Blocks",
+    "goal": "",
+    "motivation": ""
+  },
+  "custom_6c658a98": {
+    "name": "Important Ag Soils",
+    "goal": "",
+    "motivation": ""
+  },
+  "custom_d324ef92": {
+    "name": "Second Tier Crossings",
+    "goal": "",
+    "motivation": ""
+  }
+}

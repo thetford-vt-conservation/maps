@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Unlisted: shared by link only. noindex keeps it out of search results even if a
+     crawler reaches it; nofollow stops it passing on the links it contains. This is
+     the only protection here -- anyone with the URL can read the page. -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Thetford Conservation Priorities</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="app">
+  <aside class="margin" id="sidebar">
+    <div class="masthead">
+      <div class="place">Thetford, Vermont</div>
+      <h1>Conservation Priorities</h1>
+    </div>
+    <div id="panel" class="panel">
+      <div class="loading">Loading&hellip;</div>
+    </div>
+  </aside>
+
+  <main class="plate">
+    <div id="map"></div>
+    <div id="hover-box" class="readout"></div>
+    <div id="legend" class="key">
+      <div class="key-title">Ecological importance</div>
+      <div id="legend-items"></div>
+    </div>
+  </main>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

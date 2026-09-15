@@ -1,0 +1,245 @@
+/*
+ * Quiet cartographic chrome.
+ *
+ * The map is the only thing allowed to carry colour. Everything around it is a
+ * warm neutral drawn from the basemap's paper tone, separated by hairlines rather
+ * than cards -- no shadows, no filled buttons, no badges. Type is small and even,
+ * the way marginalia on a printed map plate is, with hierarchy coming from weight
+ * and ink rather than size jumps.
+ */
+
+:root {
+    /* map tiers -- the only saturated colour in the interface */
+    --tier-high:   #2c7fb8;
+    --tier-medium: #7fcdbb;
+    --tier-low:    #edf8b1;
+
+    /* warm neutrals, keyed to the tan of the terrain basemap */
+    --paper:      #fbfaf7;
+    --paper-edge: #f4f2ec;
+    --rule:       #e0dbd1;
+    --rule-soft:  #ebe7df;
+    --ink:        #2c2a25;
+    --ink-soft:   #6d675c;
+    --ink-faint:  #9c958a;
+
+    --margin-width: 330px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.app { display: flex; height: 100%; }
+
+/* ---------- the margin: title, index, notes ---------- */
+
+.margin {
+    width: var(--margin-width);
+    flex: 0 0 var(--margin-width);
+    background: var(--paper);
+    border-right: 1px solid var(--rule);
+    overflow-y: auto;
+    padding: 26px 22px 40px;
+}
+
+.masthead { margin-bottom: 26px; }
+.masthead .place {
+    font-size: .68rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 5px;
+}
+.masthead h1 {
+    margin: 0;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 1.42rem;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+}
+
+.panel .loading { color: var(--ink-faint); font-size: .84rem; }
+
+/* section captions -- one weight quieter than the entries they head */
+.caption {
+    font-size: .74rem;
+    color: var(--ink-faint);
+    margin: 24px 0 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--rule-soft);
+}
+.caption:first-child { margin-top: 0; }
+
+/* ---------- entries ---------- */
+
+.item {
+    display: flex; align-items: baseline; gap: 9px;
+    padding: 6px 2px 6px 0;
+    cursor: pointer;
+    line-height: 1.35;
+    font-size: .875rem;
+    color: var(--ink-soft);
+}
+.item:hover { color: var(--ink); }
+.item.active { color: var(--ink); font-weight: 500; }
+
+/* radio + swatch, drawn rather than iconed */
+.item .radio {
+    position: relative; top: 1px;
+    width: 9px; height: 9px; flex: 0 0 9px;
+    border: 1px solid var(--ink-faint);
+    border-radius: 50%;
+}
+.item.active .radio { border-color: var(--tier-high); }
+.item.active .radio::after {
+    content: ""; position: absolute; inset: 1.5px;
+    background: var(--tier-high); border-radius: 50%;
+}
+.item .swatch {
+    position: relative; top: 1px;
+    width: 10px; height: 10px; flex: 0 0 10px;
+    border: 1px solid rgba(0,0,0,.25);
+}
+.item.combined .swatch {
+    background: linear-gradient(135deg,
+        var(--tier-high) 0 33%, var(--tier-medium) 33% 66%, var(--tier-low) 66% 100%);
+}
+.item .label { flex: 1 1 auto; }
+
+/* ---------- tier groups ---------- */
+
+.group { margin-bottom: 2px; }
+.group-head {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 7px 2px 6px 0;
+    cursor: pointer;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule-soft);
+}
+.group-head:hover { color: var(--ink); }
+
+/* chevron drawn as a rotated corner -- no icon font */
+.group-head .chev {
+    position: relative; top: -2px;
+    width: 6px; height: 6px; flex: 0 0 6px;
+    border-right: 1.5px solid var(--ink-faint);
+    border-bottom: 1.5px solid var(--ink-faint);
+    transform: rotate(45deg);
+    transition: transform .15s ease;
+}
+.group.collapsed .chev { transform: rotate(-45deg); top: 0; }
+
+.group-head .swatch {
+    position: relative; top: 1px;
+    width: 10px; height: 10px; flex: 0 0 10px;
+    border: 1px solid rgba(0,0,0,.25);
+}
+.group-head .title { flex: 1 1 auto; font-size: .8rem; }
+.group-head .count {
+    font-size: .74rem; color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+}
+.group-body { padding: 4px 0 10px 4px; }
+.group.collapsed .group-body { display: none; }
+
+/* ---------- the note under the selected entry ---------- */
+
+.note {
+    margin: 2px 0 14px 4px;
+    padding: 2px 0 2px 14px;
+    border-left: 2px solid var(--rule);
+    font-size: .845rem;
+    line-height: 1.58;
+    color: var(--ink-soft);
+}
+.note.tier-red    { border-left-color: var(--tier-high); }
+.note.tier-yellow { border-left-color: var(--tier-medium); }
+.note.tier-green  { border-left-color: #d7e07a; }
+
+.note .standing {
+    font-size: .74rem;
+    letter-spacing: .04em;
+    color: var(--ink-faint);
+    margin-bottom: 9px;
+}
+.note p { margin: 0 0 9px; }
+.note p:last-child { margin-bottom: 0; }
+.note .term {
+    color: var(--ink-faint);
+    font-style: italic;
+}
+.note .built {
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .79rem;
+    line-height: 1.5;
+}
+.note a { color: var(--tier-high); text-decoration: none; border-bottom: 1px solid rgba(44,127,184,.3); }
+.note a:hover { border-bottom-color: var(--tier-high); }
+
+/* ---------- the plate: map, edge to edge ---------- */
+
+.plate { position: relative; flex: 1 1 auto; }
+#map { position: absolute; inset: 0; background: var(--paper-edge); }
+
+/* marginalia sit flat on the map -- hairline, no shadow, no rounding */
+.key, .readout {
+    position: absolute; z-index: 500;
+    background: rgba(251,250,247,.93);
+    border: 1px solid var(--rule);
+    padding: 9px 11px;
+    font-size: .78rem;
+    line-height: 1.45;
+}
+.key { right: 16px; bottom: 26px; }
+.readout { left: 16px; top: 16px; display: none; max-width: 270px; }
+
+.key-title, .readout .standing {
+    font-size: .72rem; color: var(--ink-faint);
+    margin-bottom: 6px;
+}
+.key-row { display: flex; align-items: center; gap: 8px; margin: 3px 0; color: var(--ink-soft); }
+.key-row .swatch { width: 11px; height: 11px; border: 1px solid rgba(0,0,0,.25); }
+
+.readout .name { font-weight: 500; margin-bottom: 3px; }
+.readout ul { margin: 5px 0 0; padding-left: 15px; color: var(--ink-soft); }
+.readout li { margin: 1px 0; }
+
+/* Leaflet's own furniture, quieted to match */
+.leaflet-control-zoom { border: none !important; box-shadow: none !important; }
+.leaflet-control-zoom a {
+    background: rgba(251,250,247,.93) !important;
+    border: 1px solid var(--rule) !important;
+    color: var(--ink-soft) !important;
+    border-radius: 0 !important;
+    width: 26px !important; height: 26px !important;
+    line-height: 24px !important; font-size: 15px !important;
+    font-weight: 400 !important;
+}
+.leaflet-control-zoom a + a { border-top: none !important; }
+.leaflet-control-zoom a:hover { color: var(--ink) !important; }
+.leaflet-control-attribution {
+    background: rgba(251,250,247,.8) !important;
+    font-size: 10px !important;
+    color: var(--ink-faint) !important;
+}
+.leaflet-control-attribution a { color: var(--ink-soft) !important; }
+
+@media (max-width: 1000px) {
+    .app { flex-direction: column; }
+    .margin {
+        width: 100%; flex: 0 0 auto; max-height: 45%;
+        border-right: none; border-bottom: 1px solid var(--rule);
+        padding: 18px 18px 24px;
+    }
+    .plate { flex: 1 1 auto; min-height: 55%; }
+}
