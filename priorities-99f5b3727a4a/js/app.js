@@ -245,9 +245,9 @@ const App = {
         b.push(`<p>${l.acres.toLocaleString()} acres in town, across
                 ${l.features.toLocaleString()} separate ${l.features === 1 ? 'area' : 'areas'}.</p>`);
 
-        if (l.goal) b.push(`<p>${l.goal}</p>`);
-        if (l.motivation) b.push(`<p>${l.motivation}</p>`);
-        if (l.how_built) b.push(`<p class="built">${l.how_built}</p>`);
+        if (l.goal) b.push(`<p class="hdr">Goal</p><p>${l.goal}</p>`);
+        if (l.motivation) b.push(`<p class="hdr">Why it matters</p><p>${l.motivation}</p>`);
+        if (l.how_built) b.push(`<p class="hdr">How it was defined</p><p class="built">${l.how_built}</p>`);
         if (l.sources && l.sources.length) {
             const s = l.sources.map(x => x.url
                 ? `<a href="${x.url}" target="_blank" rel="noopener">${x.name}</a>` : x.name).join(', ');

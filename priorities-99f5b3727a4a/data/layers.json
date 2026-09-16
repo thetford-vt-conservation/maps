@@ -15,7 +15,7 @@
           "url": "https://www.thetfordvt.gov/government/conservation-commission"
         }
       ],
-      "acres": 680,
+      "acres": 354,
       "features": 16
     },
     {
@@ -26,33 +26,15 @@
       "color": "#2c7fb8",
       "goal": "",
       "motivation": "Buffer needs needs to be verified.",
-      "how_built": "Vernal Pool Atlas (mappedPoolStatus = Confirmed; 300 ft buffer)",
+      "how_built": "Vernal Pool Atlas (mappedPoolStatus = Confirmed; 600 ft buffer)",
       "sources": [
         {
           "name": "Vermont Vernal Pool Atlas",
           "url": "https://vpatlas.org/explore/"
         }
       ],
-      "acres": 129,
+      "acres": 263,
       "features": 10
-    },
-    {
-      "id": "custom_0d7d7d49",
-      "name": "Floodplain Forests and Riparian Connectivity",
-      "tier": "red",
-      "tier_label": "Highest importance",
-      "color": "#2c7fb8",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Riparian Wildlife Connectivity (VCD)",
-      "sources": [
-        {
-          "name": "Vermont Conservation Design",
-          "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
-        }
-      ],
-      "acres": 8510,
-      "features": 686
     },
     {
       "id": "custom_c2ea57e7",
@@ -69,8 +51,26 @@
           "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
         }
       ],
-      "acres": 119,
+      "acres": 62,
       "features": 5
+    },
+    {
+      "id": "custom_0d7d7d49",
+      "name": "Riparian Connectivity",
+      "tier": "red",
+      "tier_label": "Highest importance",
+      "color": "#2c7fb8",
+      "goal": "",
+      "motivation": "",
+      "how_built": "Riparian Wildlife Connectivity (VCD)",
+      "sources": [
+        {
+          "name": "Vermont Conservation Design",
+          "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
+        }
+      ],
+      "acres": 4427,
+      "features": 686
     },
     {
       "id": "custom_0cf3cd91",
@@ -80,15 +80,15 @@
       "color": "#2c7fb8",
       "goal": "",
       "motivation": "",
-      "how_built": "Rare, Threatened & Endangered Species (VCD) (VT_LISTED = Y; US_LISTED = Y)",
+      "how_built": "Rare, Threatened & Endangered Species (VCD) (VT_LISTED = Y) combined with Rare, Threatened & Endangered Species (VCD) (US_LISTED = Y)",
       "sources": [
         {
           "name": "Vermont Conservation Design",
           "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
         }
       ],
-      "acres": 5922,
-      "features": 5
+      "acres": 3080,
+      "features": 11
     },
     {
       "id": "custom_0a14cdde",
@@ -98,7 +98,7 @@
       "color": "#2c7fb8",
       "goal": "",
       "motivation": "",
-      "how_built": "Forest Connectivity Blocks intersected with Wildlife Road Crossings (OverallConnectivity = Above Average, Average, Well Above Average, Well Below Average; 100 ft buffer)",
+      "how_built": "Forest Connectivity Blocks intersected with Wildlife Road Crossings (OverallConnectivity = Above Average, Average, Well Above Average; 100 ft buffer)",
       "sources": [
         {
           "name": "Vermont Agency of Natural Resources",
@@ -109,8 +109,8 @@
           "url": "https://www.thetfordvt.gov/government/conservation-commission"
         }
       ],
-      "acres": 322,
-      "features": 98
+      "acres": 167,
+      "features": 94
     },
     {
       "id": "custom_2bbc6497",
@@ -127,7 +127,7 @@
           "url": "https://anr.vermont.gov/"
         }
       ],
-      "acres": 6674,
+      "acres": 3472,
       "features": 486
     },
     {
@@ -145,14 +145,14 @@
           "url": "https://anr.vermont.gov/"
         }
       ],
-      "acres": 34929,
+      "acres": 18163,
       "features": 15
     },
     {
       "id": "custom_6c658a98",
       "name": "Important Ag Soils",
       "tier": "green",
-      "tier_label": "Ecologically important",
+      "tier_label": "Important",
       "color": "#edf8b1",
       "goal": "",
       "motivation": "",
@@ -163,26 +163,26 @@
           "url": "https://vcgi.vermont.gov/"
         }
       ],
-      "acres": 4915,
+      "acres": 2557,
       "features": 159
     },
     {
       "id": "custom_d324ef92",
       "name": "Second Tier Crossings",
       "tier": "green",
-      "tier_label": "Ecologically important",
+      "tier_label": "Important",
       "color": "#edf8b1",
       "goal": "",
       "motivation": "",
-      "how_built": "Wildlife Road Crossings (OverallConnectivity = Above Average, Well Above Average, Well Below Average, Average; 50 ft buffer)",
+      "how_built": "Wildlife Road Crossings (OverallConnectivity = Above Average, Well Above Average, Average; 50 ft buffer)",
       "sources": [
         {
           "name": "Thetford Natural Resource Inventory",
           "url": "https://www.thetfordvt.gov/government/conservation-commission"
         }
       ],
-      "acres": 404,
-      "features": 93
+      "acres": 201,
+      "features": 82
     }
   ],
   "tier_colors": {
@@ -193,6 +193,6 @@
   "tier_labels": {
     "red": "Highest importance",
     "yellow": "Medium importance",
-    "green": "Ecologically important"
+    "green": "Important"
   }
 }

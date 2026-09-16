@@ -1,56 +1,56 @@
 {
   "__tiered__": {
     "name": "Tiered Map",
-    "description": "Every contributing layer combined into a single map of ecological importance. Each area takes the importance of the highest-ranked layer covering it. Hover any area to see which layers contribute there."
+    "description": "Every contributing layer combined into a single map of ecological importance. Each area takes the importance of the highest-ranked layer covering it, so overlap never inflates a score. Hover any area to see which layers contribute there."
   },
   "custom_3b424511": {
     "name": "Amphibian Road Crossings",
-    "goal": "",
-    "motivation": "Amphibian would move 600ft max"
+    "goal": "Keep spring migration routes between wintering forest and breeding pools passable, and keep the roadside habitat at those spots intact.",
+    "motivation": "Thetford's 2025 wildlife road crossing study found 24 biologically active amphibian crossings totaling 3.7 miles, with eight species recorded. Two are Species of Greatest Conservation Need: spotted salamander, at eight crossings, and four-toed salamander (ranked S3, uncommon in Vermont) at one. Adults cross on a handful of wet nights each spring, so a single busy stretch of road can erase a local population. See the <a href=\"https://www.thetfordvt.gov/government/conservation-commission\" target=\"_blank\" rel=\"noopener\">Thetford Conservation Commission</a> for the full inventory."
   },
   "custom_f986b655": {
     "name": "Confirmed Vernal Pools",
-    "goal": "",
-    "motivation": "Buffer needs needs to be verified."
+    "goal": "Protect pools with confirmed breeding activity together with the forest immediately around them.",
+    "motivation": "Fishless seasonal pools are the main breeding habitat for wood frogs and for Vermont's mole salamanders &mdash; spotted, blue-spotted and Jefferson &mdash; which breed nowhere else. The animals spend most of the year in the surrounding forest, not the water, so protecting the pool alone does not work. Vermont Fish &amp; Wildlife manages that forest out to 600 ft (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Learn%20More/LandownersGuide/12.Wetlands.pdf\" target=\"_blank\" rel=\"noopener\">Wildlife Habitat Management: A Landowner&rsquo;s Guide</a>). The 600 ft outer zone is the buffer mapped here. Pool locations come from the <a href=\"https://vpatlas.org/\" target=\"_blank\" rel=\"noopener\">Vermont Vernal Pool Atlas</a>."
   },
   "custom_0d7d7d49": {
-    "name": "Floodplain Forests and Riparian Connectivity",
-    "goal": "",
-    "motivation": ""
+    "name": "Riparian Connectivity",
+    "goal": "Keep river and stream corridors forested, connected, and free to flood and meander.",
+    "motivation": "Riparian land does double duty: habitat for mink, otter, beaver and wood turtle, and the main connective tissue of an otherwise fragmented landscape. Forested banks stabilize soil, store floodwater, filter sediment and nutrients, and shade streams against warming. Vermont Conservation Design finds the corridor width needed for wildlife travel varies from about 100 ft on small streams to 600 ft or more on larger rivers, split either side of the water (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design, Summary Report</a>). The area shown here is the state's mapped riparian connectivity network in Thetford."
   },
   "custom_c2ea57e7": {
     "name": "Natural Communities",
-    "goal": "",
-    "motivation": ""
+    "goal": "Protect the rare and uncommon natural community types confirmed in town.",
+    "motivation": "Vermont recognizes 97 wetland and upland natural community types and conserving good examples of each is a cornerstone of the state's strategy for biological diversity (<a href=\"https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-community-inventory/natural-community-fact-sheets\" target=\"_blank\" rel=\"noopener\">Vermont Fish &amp; Wildlife natural community fact sheets</a>). This layer holds the rare (S2) and uncommon (S3) types mapped in Thetford: Wet Clayplain Forest and Sugar Maple Riverine Forest on the glacial clays of the valley floors, an Intermediate Fen, Northern Hardwood Seepage Forest and Alluvial Shrub Swamp. Others are known to occur but have not yet been mapped. Small in acreage, disproportionate in value. Records come from the <a href=\"https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory\" target=\"_blank\" rel=\"noopener\">Vermont Natural Heritage Inventory</a>."
   },
   "custom_0cf3cd91": {
     "name": "Threatened Species",
-    "goal": "",
-    "motivation": ""
+    "goal": "Protect documented habitat for species listed as threatened or endangered.",
+    "motivation": "The map shows ten recorded occurrences of species protected under Vermont or federal endangered species law &mdash; nine animals and one plant. Five are listed federally; five are listed by the state alone. The state does not publish which species each occurrence is, and the areas drawn are generalized habitat rather than exact locations, both deliberately, so that rare species cannot be tracked down from a public map (<a href=\"https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory\" target=\"_blank\" rel=\"noopener\">Vermont Natural Heritage Inventory</a>). Separately, Thetford's Natural Resource Inventory documents which listed species occur in town: three bat species &mdash; Northern Long-eared Bat, now federally endangered after white-nose syndrome cut its numbers by 97&ndash;100% range-wide (<a href=\"https://www.fws.gov/species/northern-long-eared-bat-myotis-septentrionalis\" target=\"_blank\" rel=\"noopener\">U.S. Fish &amp; Wildlife Service</a>), Little Brown Bat and Eastern Small-footed Bat &mdash; along with the federally endangered Dwarf Wedgemussel in the Connecticut River and the state-threatened plant sweet coltsfoot. The bats spread across town's forests, wetlands and riverbanks from mid-April through October, which is why the state asks landowners to avoid cutting trees during those months. Listings from <a href=\"https://www.vtfishandwildlife.com/conserve/endangered-and-threatened-species\" target=\"_blank\" rel=\"noopener\">Vermont Fish &amp; Wildlife</a>."
   },
   "custom_0a14cdde": {
     "name": "Top Tier Crossings",
-    "goal": "",
-    "motivation": ""
+    "goal": "Keep passable the road segments that cut through the regional forest network.",
+    "motivation": "These are the mapped wildlife crossings that fall inside a Vermont Conservation Design connectivity block &mdash; where a road cuts across a corridor running well beyond town, so the crossing carries more than local traffic in wildlife terms. Thetford sits in two such corridors: a north&ndash;south band along the east side of Vermont, and an east&ndash;west link from the Green Mountains to the White Mountains. Keeping forest cover on both shoulders is what maintains passage (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design</a>; <a href=\"https://www.thetfordvt.gov/government/conservation-commission\" target=\"_blank\" rel=\"noopener\">2025 Thetford wildlife road crossing study</a>)."
   },
   "custom_2bbc6497": {
     "name": "Wetlands",
-    "goal": "",
-    "motivation": ""
+    "goal": "Keep mapped wetlands and a margin of upland around them intact.",
+    "motivation": "Wetlands store floodwater, trap sediment, strip nutrients from runoff, and support a disproportionate share of Vermont's rare species; many also feed cold-water streams through groundwater discharge. Thetford's are small and scattered, which makes them easy to lose one at a time. The map shows each mapped wetland plus the 50 ft buffer that the Vermont Wetland Rules already protect around a Class II wetland (<a href=\"https://dec.vermont.gov/watershed/wetlands/contact/frequently-asked-questions-about-wetlands\" target=\"_blank\" rel=\"noopener\">Vermont DEC</a>), about 3,470 acres in all. Statewide, Vermont has lost as much as 35% of its original wetlands (<a href=\"https://dec.vermont.gov/watershed/wetlands/protect/protect\" target=\"_blank\" rel=\"noopener\">Vermont DEC</a>)."
   },
   "custom_77a73964": {
     "name": "Highest Priority Connectivity Blocks",
-    "goal": "",
-    "motivation": ""
+    "goal": "Keep the forest network unfragmented, especially along the edges where blocks meet.",
+    "motivation": "This is the backbone of Vermont's forest network that lets animals move across the state and into New Hampshire and Qu&eacute;bec. It matters for daily movement, for young animals dispersing to find territory, for genetic exchange between populations, and for species shifting range as the climate warms. It covers roughly two thirds of Thetford, so read it as the background the finer-scale layers sit inside rather than a designation on any one site; that is why it sits in the middle tier here despite the state calling it highest priority. The goal is to avoid permanently fragmenting these blocks (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design, Summary Report</a>)."
   },
   "custom_6c658a98": {
     "name": "Important Ag Soils",
-    "goal": "",
-    "motivation": ""
+    "goal": "Keep the town's most capable farmland available for farming.",
+    "motivation": "Vermont treats agricultural soils as a regulated resource under <a href=\"https://agriculture.vermont.gov/land-use-renewable-energy/act-250-criterion-9b\" target=\"_blank\" rel=\"noopener\">Act 250 Criterion 9(B)</a>, which covers soils of prime, statewide or local importance; this map shows the prime soils only. Thetford's lie mostly in the Connecticut River Valley east of I-91, on sediments laid down by glacial Lake Hitchcock at the end of the last ice age and are not reproducible elsewhere in town. These open fields also carry grassland birds that have declined regionally, including bobolink and eastern meadowlark, which nest successfully only where mowing waits until after August 1 (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design, Summary Report</a>)."
   },
   "custom_d324ef92": {
     "name": "Second Tier Crossings",
-    "goal": "",
-    "motivation": ""
+    "goal": "Keep the town's remaining road crossings permeable where habitat continues on both sides.",
+    "motivation": "The full set of wildlife crossings identified in the town inventory. Crossings that also fall inside the regional connectivity network appear in the top tier as well, and the map shows each area at its highest tier. Individually lower stakes, but collectively they are what keeps the town permeable at a local scale by letting animals reach feeding, breeding and overwintering habitat within Thetford rather than only through it. From the <a href=\"https://www.thetfordvt.gov/government/conservation-commission\" target=\"_blank\" rel=\"noopener\">2025 Thetford wildlife road crossing study</a>."
   }
 }
