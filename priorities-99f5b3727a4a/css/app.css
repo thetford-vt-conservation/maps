@@ -213,7 +213,8 @@ html, body {
     line-height: 1.45;
 }
 .key { right: 16px; bottom: 26px; }
-.readout { left: 16px; top: 16px; display: none; max-width: 270px; }
+/* Top right: the zoom control owns the top left, and the key the bottom right. */
+.readout { right: 16px; top: 16px; display: none; max-width: 270px; }
 
 .key-title, .readout .standing {
     font-size: .72rem; color: var(--ink-faint);
