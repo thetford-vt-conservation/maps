@@ -1,7 +1,11 @@
 {
-  "__tiered__": {
-    "name": "Tiered Map",
+  "__map_ecological__": {
+    "name": "Ecological Conservation Priorities",
     "description": "Every contributing layer combined into a single map of ecological importance. Each area takes the importance of the highest-ranked layer covering it, so overlap never inflates a score. Hover any area to see which layers contribute there."
+  },
+  "__map_agricultural__": {
+    "name": "Agricultural Conservation Priorities",
+    "description": "Thetford's farmland soils, ranked by the NRCS farmland class. Prime farmland has the best combination of soil properties for growing crops; farmland of statewide importance is good farmland with a limitation such as slope, wetness or flooding (<a href=\"https://efotg.sc.egov.usda.gov/references/public/VT/Important_Farmlands_Narrative-update-April2018-Final.pdf\" target=\"_blank\" rel=\"noopener\">NRCS, Farmland Classification Systems for Vermont Soils</a>). Unlike the ecological map, these layers never overlap: each soil falls in one class or the other. Hover any area to see its class."
   },
   "custom_3b424511": {
     "name": "Amphibian Road Crossings",
@@ -31,7 +35,7 @@
   "custom_0a14cdde": {
     "name": "Top Tier Crossings",
     "goal": "Keep passable the road segments that cut through the regional forest network.",
-    "motivation": "These are the mapped wildlife crossings that fall inside a Vermont Conservation Design connectivity block &mdash; where a road cuts across a corridor running well beyond town, so the crossing carries more than local traffic in wildlife terms. Thetford sits in two such corridors: a north&ndash;south band along the east side of Vermont, and an east&ndash;west link from the Green Mountains to the White Mountains. Keeping forest cover on both shoulders is what maintains passage (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design</a>; <a href=\"https://www.thetfordvt.gov/government/conservation-commission\" target=\"_blank\" rel=\"noopener\">2025 Thetford wildlife road crossing study</a>)."
+    "motivation": "These are the mapped wildlife crossings that fall inside one of Vermont Conservation Design's highest priority connectivity blocks &mdash; where a road cuts across a corridor running well beyond town, so the crossing carries more than local traffic in wildlife terms. Thetford sits in two such corridors: a north&ndash;south band along the east side of Vermont, and an east&ndash;west link from the Green Mountains to the White Mountains. Keeping forest cover on both shoulders is what maintains passage (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design</a>; <a href=\"https://www.thetfordvt.gov/government/conservation-commission\" target=\"_blank\" rel=\"noopener\">2025 Thetford wildlife road crossing study</a>)."
   },
   "custom_2bbc6497": {
     "name": "Wetlands",
@@ -41,16 +45,21 @@
   "custom_77a73964": {
     "name": "Highest Priority Connectivity Blocks",
     "goal": "Keep the forest network unfragmented, especially along the edges where blocks meet.",
-    "motivation": "This is the backbone of Vermont's forest network that lets animals move across the state and into New Hampshire and Qu&eacute;bec. It matters for daily movement, for young animals dispersing to find territory, for genetic exchange between populations, and for species shifting range as the climate warms. It covers roughly two thirds of Thetford, so read it as the background the finer-scale layers sit inside rather than a designation on any one site; that is why it sits in the middle tier here despite the state calling it highest priority. The goal is to avoid permanently fragmenting these blocks (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design, Summary Report</a>)."
+    "motivation": "This is the backbone of Vermont's forest network that lets animals move across the state and into New Hampshire and Qu&eacute;bec. It matters for daily movement, for young animals dispersing to find territory, for genetic exchange between populations, and for species shifting range as the climate warms. It covers about half of Thetford, so read it as the background the finer-scale layers sit inside rather than a designation on any one site; that is why it sits in the middle tier here despite the state calling it highest priority. The goal is to avoid permanently fragmenting these blocks (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design, Summary Report</a>)."
   },
   "custom_6c658a98": {
-    "name": "Important Ag Soils",
+    "name": "Prime Agricultural Soils",
     "goal": "Keep the town's most capable farmland available for farming.",
-    "motivation": "Vermont treats agricultural soils as a regulated resource under <a href=\"https://agriculture.vermont.gov/land-use-renewable-energy/act-250-criterion-9b\" target=\"_blank\" rel=\"noopener\">Act 250 Criterion 9(B)</a>, which covers soils of prime, statewide or local importance; this map shows the prime soils only. Thetford's lie mostly in the Connecticut River Valley east of I-91, on sediments laid down by glacial Lake Hitchcock at the end of the last ice age and are not reproducible elsewhere in town. These open fields also carry grassland birds that have declined regionally, including bobolink and eastern meadowlark, which nest successfully only where mowing waits until after August 1 (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design, Summary Report</a>)."
+    "motivation": "Vermont treats agricultural soils as a regulated resource under <a href=\"https://agriculture.vermont.gov/land-use-renewable-energy/act-250-criterion-9b\" target=\"_blank\" rel=\"noopener\">Act 250 Criterion 9(B)</a>, which covers soils of prime, statewide or local importance; this layer shows the prime soils, and the soils of statewide importance are the other layer in this map. Thetford's lie mostly in the Connecticut River Valley east of I-91, on sediments laid down by glacial Lake Hitchcock at the end of the last ice age and are not reproducible elsewhere in town. These open fields also carry grassland birds that have declined regionally, including bobolink and eastern meadowlark, which nest successfully only where mowing waits until after August 1 (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Conserve/VT%20Conservation%20Landscape-level%20Design/Vermont-Conservation-Design-Summary-Report-February-2018.pdf\" target=\"_blank\" rel=\"noopener\">Vermont Conservation Design, Summary Report</a>)."
   },
   "custom_d324ef92": {
     "name": "Second Tier Crossings",
     "goal": "Keep the town's remaining road crossings permeable where habitat continues on both sides.",
     "motivation": "The full set of wildlife crossings identified in the town inventory. Crossings that also fall inside the regional connectivity network appear in the top tier as well, and the map shows each area at its highest tier. Individually lower stakes, but collectively they are what keeps the town permeable at a local scale by letting animals reach feeding, breeding and overwintering habitat within Thetford rather than only through it. From the <a href=\"https://www.thetfordvt.gov/government/conservation-commission\" target=\"_blank\" rel=\"noopener\">2025 Thetford wildlife road crossing study</a>."
+  },
+  "custom_b38dc1ed": {
+    "name": "Agricultural Soils of Statewide Importance",
+    "goal": "Keep the town's remaining good farmland available for farming.",
+    "motivation": "The NRCS rates these soils as farmland of statewide importance: land that is important for growing crops, but whose soils have a limitation that keeps them out of the prime class &mdash; slope and erosion risk, wetness, flooding, shallow bedrock, or low water-holding capacity (<a href=\"https://efotg.sc.egov.usda.gov/references/public/VT/Important_Farmlands_Narrative-update-April2018-Final.pdf\" target=\"_blank\" rel=\"noopener\">NRCS, Farmland Classification Systems for Vermont Soils</a>). Vermont's Act 250 reviews soils of prime, statewide and local importance under <a href=\"https://agriculture.vermont.gov/land-use-renewable-energy/act-250-criterion-9b\" target=\"_blank\" rel=\"noopener\">Criterion 9(B)</a>. Thetford has no soils of local importance, so between them the two layers in this map cover every soil the NRCS rates as important farmland in town."
   }
 }

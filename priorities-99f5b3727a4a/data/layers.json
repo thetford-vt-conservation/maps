@@ -1,198 +1,244 @@
 {
-  "layers": [
+  "maps": [
     {
-      "id": "custom_3b424511",
-      "name": "Amphibian Road Crossings",
-      "tier": "red",
-      "tier_label": "Highest importance",
-      "color": "#2c7fb8",
-      "goal": "",
-      "motivation": "Amphibian would move 600ft max",
-      "how_built": "Amphibian Road Crossings (AmphibConnectivity = Average, High; 300 ft buffer)",
-      "sources": [
+      "id": "ecological",
+      "name": "Ecological Conservation Priorities",
+      "short_name": "Ecological",
+      "legend_title": "Ecological importance",
+      "tiered_file": "tiered-ecological.geojson",
+      "tier_colors": {
+        "red": "#2c7fb8",
+        "yellow": "#7fcdbb",
+        "green": "#edf8b1"
+      },
+      "tier_labels": {
+        "red": "Highest importance",
+        "yellow": "Medium importance",
+        "green": "Important"
+      },
+      "layers": [
         {
-          "name": "Thetford Natural Resource Inventory",
-          "url": "https://www.thetfordvt.gov/government/conservation-commission"
-        }
-      ],
-      "acres": 354,
-      "features": 16
-    },
-    {
-      "id": "custom_f986b655",
-      "name": "Confirmed Vernal Pools",
-      "tier": "red",
-      "tier_label": "Highest importance",
-      "color": "#2c7fb8",
-      "goal": "",
-      "motivation": "Buffer needs needs to be verified.",
-      "how_built": "Vernal Pool Atlas (mappedPoolStatus = Confirmed; 600 ft buffer)",
-      "sources": [
-        {
-          "name": "Vermont Vernal Pool Atlas",
-          "url": "https://vpatlas.org/explore/"
-        }
-      ],
-      "acres": 263,
-      "features": 10
-    },
-    {
-      "id": "custom_c2ea57e7",
-      "name": "Natural Communities",
-      "tier": "red",
-      "tier_label": "Highest importance",
-      "color": "#2c7fb8",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Natural Communities (VCD) (S_RANK = S2, S3)",
-      "sources": [
-        {
-          "name": "Vermont Conservation Design",
-          "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
-        }
-      ],
-      "acres": 62,
-      "features": 5
-    },
-    {
-      "id": "custom_0d7d7d49",
-      "name": "Riparian Connectivity",
-      "tier": "red",
-      "tier_label": "Highest importance",
-      "color": "#2c7fb8",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Riparian Wildlife Connectivity (VCD)",
-      "sources": [
-        {
-          "name": "Vermont Conservation Design",
-          "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
-        }
-      ],
-      "acres": 4427,
-      "features": 686
-    },
-    {
-      "id": "custom_0cf3cd91",
-      "name": "Threatened Species",
-      "tier": "red",
-      "tier_label": "Highest importance",
-      "color": "#2c7fb8",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Rare, Threatened & Endangered Species (VCD) (VT_LISTED = Y) combined with Rare, Threatened & Endangered Species (VCD) (US_LISTED = Y)",
-      "sources": [
-        {
-          "name": "Vermont Conservation Design",
-          "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
-        }
-      ],
-      "acres": 3080,
-      "features": 11
-    },
-    {
-      "id": "custom_0a14cdde",
-      "name": "Top Tier Crossings",
-      "tier": "red",
-      "tier_label": "Highest importance",
-      "color": "#2c7fb8",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Forest Connectivity Blocks intersected with Wildlife Road Crossings (OverallConnectivity = Above Average, Average, Well Above Average; 100 ft buffer)",
-      "sources": [
-        {
-          "name": "Vermont Agency of Natural Resources",
-          "url": "https://anr.vermont.gov/"
+          "id": "custom_3b424511",
+          "name": "Amphibian Road Crossings",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "Amphibian would move 600ft max",
+          "how_built": "Amphibian Road Crossings (AmphibConnectivity = Average, High; 300 ft buffer)",
+          "sources": [
+            {
+              "name": "Thetford Natural Resource Inventory",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            }
+          ],
+          "acres": 354,
+          "features": 16
         },
         {
-          "name": "Thetford Natural Resource Inventory",
-          "url": "https://www.thetfordvt.gov/government/conservation-commission"
+          "id": "custom_f986b655",
+          "name": "Confirmed Vernal Pools",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "Buffer needs needs to be verified.",
+          "how_built": "Vernal Pool Atlas (mappedPoolStatus = Confirmed; 600 ft buffer)",
+          "sources": [
+            {
+              "name": "Vermont Vernal Pool Atlas",
+              "url": "https://vpatlas.org/explore/"
+            }
+          ],
+          "acres": 263,
+          "features": 10
+        },
+        {
+          "id": "custom_c2ea57e7",
+          "name": "Natural Communities",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Natural Communities (VCD) (S_RANK = S2, S3)",
+          "sources": [
+            {
+              "name": "Vermont Conservation Design",
+              "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
+            }
+          ],
+          "acres": 62,
+          "features": 5
+        },
+        {
+          "id": "custom_0d7d7d49",
+          "name": "Riparian Connectivity",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Riparian Wildlife Connectivity (VCD)",
+          "sources": [
+            {
+              "name": "Vermont Conservation Design",
+              "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
+            }
+          ],
+          "acres": 4427,
+          "features": 686
+        },
+        {
+          "id": "custom_0cf3cd91",
+          "name": "Threatened Species",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Rare, Threatened & Endangered Species (VCD) (VT_LISTED = Y) combined with Rare, Threatened & Endangered Species (VCD) (US_LISTED = Y)",
+          "sources": [
+            {
+              "name": "Vermont Conservation Design",
+              "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
+            }
+          ],
+          "acres": 3080,
+          "features": 11
+        },
+        {
+          "id": "custom_0a14cdde",
+          "name": "Top Tier Crossings",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Forest Connectivity Blocks (Connectivity_Blocks_Priority = Highest Priority) intersected with Wildlife Road Crossings (OverallConnectivity = Above Average, Average, Well Above Average; 100 ft buffer)",
+          "sources": [
+            {
+              "name": "Vermont Agency of Natural Resources",
+              "url": "https://anr.vermont.gov/"
+            },
+            {
+              "name": "Thetford Natural Resource Inventory",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            }
+          ],
+          "acres": 128,
+          "features": 71
+        },
+        {
+          "id": "custom_2bbc6497",
+          "name": "Wetlands",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Wetlands (50 ft buffer)",
+          "sources": [
+            {
+              "name": "VT Agency of Natural Resources",
+              "url": "https://anr.vermont.gov/"
+            }
+          ],
+          "acres": 3472,
+          "features": 486
+        },
+        {
+          "id": "custom_77a73964",
+          "name": "Highest Priority Connectivity Blocks",
+          "tier": "yellow",
+          "tier_label": "Medium importance",
+          "color": "#7fcdbb",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Forest Connectivity Blocks (Connectivity_Blocks_Priority = Highest Priority)",
+          "sources": [
+            {
+              "name": "Vermont Agency of Natural Resources",
+              "url": "https://anr.vermont.gov/"
+            }
+          ],
+          "acres": 15012,
+          "features": 9
+        },
+        {
+          "id": "custom_d324ef92",
+          "name": "Second Tier Crossings",
+          "tier": "green",
+          "tier_label": "Important",
+          "color": "#edf8b1",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Wildlife Road Crossings (OverallConnectivity = Above Average, Well Above Average, Average; 50 ft buffer)",
+          "sources": [
+            {
+              "name": "Thetford Natural Resource Inventory",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            }
+          ],
+          "acres": 201,
+          "features": 82
         }
-      ],
-      "acres": 167,
-      "features": 94
+      ]
     },
     {
-      "id": "custom_2bbc6497",
-      "name": "Wetlands",
-      "tier": "red",
-      "tier_label": "Highest importance",
-      "color": "#2c7fb8",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Wetlands (50 ft buffer)",
-      "sources": [
+      "id": "agricultural",
+      "name": "Agricultural Conservation Priorities",
+      "short_name": "Agricultural",
+      "legend_title": "Agricultural importance",
+      "tiered_file": "tiered-agricultural.geojson",
+      "tier_colors": {
+        "red": "#2c7fb8",
+        "yellow": "#7fcdbb",
+        "green": "#edf8b1"
+      },
+      "tier_labels": {
+        "red": "Highest importance",
+        "yellow": "Medium importance",
+        "green": "Important"
+      },
+      "layers": [
         {
-          "name": "VT Agency of Natural Resources",
-          "url": "https://anr.vermont.gov/"
-        }
-      ],
-      "acres": 3472,
-      "features": 486
-    },
-    {
-      "id": "custom_77a73964",
-      "name": "Highest Priority Connectivity Blocks",
-      "tier": "yellow",
-      "tier_label": "Medium importance",
-      "color": "#7fcdbb",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Forest Connectivity Blocks",
-      "sources": [
+          "id": "custom_6c658a98",
+          "name": "Prime Agricultural Soils",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Agricultural Soils (PRIME = Prime, Prime (b), Prime (f))",
+          "sources": [
+            {
+              "name": "VT Center for Geographic Information",
+              "url": "https://vcgi.vermont.gov/"
+            }
+          ],
+          "acres": 2557,
+          "features": 159
+        },
         {
-          "name": "Vermont Agency of Natural Resources",
-          "url": "https://anr.vermont.gov/"
+          "id": "custom_b38dc1ed",
+          "name": "Agricultural Soils of Statewide Importance",
+          "tier": "yellow",
+          "tier_label": "Medium importance",
+          "color": "#7fcdbb",
+          "goal": "",
+          "motivation": "",
+          "how_built": "Agricultural Soils (PRIME = Statewide, Statewide (b))",
+          "sources": [
+            {
+              "name": "VT Center for Geographic Information",
+              "url": "https://vcgi.vermont.gov/"
+            }
+          ],
+          "acres": 3907,
+          "features": 170
         }
-      ],
-      "acres": 18163,
-      "features": 15
-    },
-    {
-      "id": "custom_6c658a98",
-      "name": "Important Ag Soils",
-      "tier": "green",
-      "tier_label": "Important",
-      "color": "#edf8b1",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Agricultural Soils (PRIME = Prime, Prime (b), Prime (f))",
-      "sources": [
-        {
-          "name": "VT Center for Geographic Information",
-          "url": "https://vcgi.vermont.gov/"
-        }
-      ],
-      "acres": 2557,
-      "features": 159
-    },
-    {
-      "id": "custom_d324ef92",
-      "name": "Second Tier Crossings",
-      "tier": "green",
-      "tier_label": "Important",
-      "color": "#edf8b1",
-      "goal": "",
-      "motivation": "",
-      "how_built": "Wildlife Road Crossings (OverallConnectivity = Above Average, Well Above Average, Average; 50 ft buffer)",
-      "sources": [
-        {
-          "name": "Thetford Natural Resource Inventory",
-          "url": "https://www.thetfordvt.gov/government/conservation-commission"
-        }
-      ],
-      "acres": 201,
-      "features": 82
+      ]
     }
-  ],
-  "tier_colors": {
-    "red": "#2c7fb8",
-    "yellow": "#7fcdbb",
-    "green": "#edf8b1"
-  },
-  "tier_labels": {
-    "red": "Highest importance",
-    "yellow": "Medium importance",
-    "green": "Important"
-  }
+  ]
 }
