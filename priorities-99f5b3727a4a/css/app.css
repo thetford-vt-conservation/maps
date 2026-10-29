@@ -216,11 +216,15 @@ html, body {
     font-style: italic;
 }
 .note .built {
+    margin: 0 0 9px;
+    padding-left: 18px;
     color: var(--ink);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: .79rem;
+    font-size: .83rem;
     line-height: 1.5;
 }
+.note .built li { margin: 2px 0; }
+.note .built li::marker { color: var(--ink-faint); }
+.note .built.exact { font-size: .76rem; color: var(--ink-soft); }
 .note a { color: var(--tier-high); text-decoration: none; border-bottom: 1px solid rgba(44,127,184,.3); }
 .note a:hover { border-bottom-color: var(--tier-high); }
 
@@ -252,6 +256,57 @@ html, body {
 .readout .name { font-weight: 500; margin-bottom: 3px; }
 .readout ul { margin: 5px 0 0; padding-left: 15px; color: var(--ink-soft); }
 .readout li { margin: 1px 0; }
+
+/* Layers button: collapsed under the zoom control until wanted */
+.overlay-control {
+    background: rgba(251,250,247,.93);
+    border: 1px solid var(--rule);
+    font-size: .78rem;
+    color: var(--ink-soft);
+    max-width: 230px;
+}
+.overlay-toggle {
+    display: flex; align-items: center; gap: 6px;
+    background: none; border: none; cursor: pointer;
+    padding: 5px 8px; font: inherit; color: inherit;
+}
+.overlay-toggle:hover, .overlay-toggle[aria-expanded="true"] { color: var(--ink); }
+.overlay-list { padding: 2px 10px 9px; border-top: 1px solid var(--rule-soft); }
+.overlay-caption { font-size: .72rem; color: var(--ink-faint); margin: 6px 0 4px; }
+.overlay-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; cursor: pointer; }
+.overlay-row input { margin: 0; accent-color: var(--ink-soft); }
+.overlay-swatch { flex: none; }
+.overlay-note { font-size: .68rem; color: var(--ink-faint); margin-top: 7px; line-height: 1.4; }
+.overlay-note a { color: var(--ink-soft); }
+.pt-overlays .pt-src:first-child { margin-top: 0; }
+
+/* Click details: a margin note pinned to the map, not a card */
+.pt-popup .leaflet-popup-content-wrapper {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--ink);
+}
+.pt-popup .leaflet-popup-tip { background: var(--paper); border: 1px solid var(--rule); box-shadow: none; }
+.pt-popup .leaflet-popup-content { margin: 10px 12px; font-size: .78rem; line-height: 1.45; }
+.pt-popup a.leaflet-popup-close-button { color: var(--ink-faint); }
+.pt-tier {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 500; padding: 0 16px 7px 0;
+    border-bottom: 1px solid var(--rule);
+}
+.pt-tier .swatch { width: 11px; height: 11px; border: 1px solid rgba(0,0,0,.25); }
+.pt-layer { padding: 8px 0; border-bottom: 1px solid var(--rule-soft); }
+.pt-layer:last-child { border-bottom: none; padding-bottom: 0; }
+.pt-name { font-weight: 500; padding-right: 16px; }
+.pt-standing, .pt-note { font-size: .72rem; color: var(--ink-faint); margin: 1px 0 0; }
+.pt-src { font-size: .72rem; color: var(--ink-soft); margin: 6px 0 2px; }
+.pt-away { color: var(--ink-faint); margin-left: 6px; }
+.pt table { border-collapse: collapse; width: 100%; }
+.pt th, .pt td { text-align: left; vertical-align: top; padding: 1px 0; font-weight: 400; }
+.pt th { color: var(--ink-faint); padding-right: 10px; white-space: nowrap; width: 1%; }
+.pt td { color: var(--ink); overflow-wrap: anywhere; }
 
 /* Leaflet's own furniture, quieted to match */
 .leaflet-control-zoom { border: none !important; box-shadow: none !important; }

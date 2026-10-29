@@ -10,6 +10,14 @@
  *
  * Selection and description share one side panel: the description renders inline
  * beneath whichever row is selected, so the map keeps the rest of the screen.
+ *
+ * Clicking the map opens a popup with the source features behind each layer at
+ * that point (a wetland's assessment, a crossing's species, a soil's rating),
+ * read from the details-<layer>.geojson files the build writes beside each layer.
+ *
+ * Reference overlays (parcels, conserved land...) can be drawn over any view from a
+ * Layers button on the map. They are outlines only, so the tier fills stay legible,
+ * and load live from the state's services, as on the main TCC map.
  */
 const App = {
     map: null,
@@ -24,6 +32,81 @@ const App = {
     townLayer: null,      // town outline, drawn on every view
 
     TIER_ORDER: ['red', 'yellow', 'green'],
+
+    // How near a click must come to a source feature to count, in metres, on top
+    // of the layer's own buffer: lines and points can't otherwise be clicked.
+    CLICK_TOLERANCE_M: 15,
+    FEATURES_PER_SOURCE: 3,
+
+    // Outline-only reference layers, borrowed from the main TCC map (tcc-maps).
+    // fields name what the click popup shows; nothing else is requested.
+    OVERLAYS: [
+        {
+            id: 'conserved', name: 'Conserved land',
+            url: 'https://services5.arcgis.com/Uzks6LSde6r23wwG/arcgis/rest/services/Conserved_Land_Inventory_Public_View/FeatureServer/0',
+            style: { color: '#b5452b', weight: 2, opacity: 0.95, innerShade: 7 },
+            fields: { 'Name': 'AREA_NAME', 'Owner': 'FEE_OWNER', 'Held by': 'INT_HOLDER', 'Protection': 'INT_TYPE' },
+            townOnly: true,   // no town field: kept by whether it reaches inside the town line
+            source: '<a href="https://geodata.vermont.gov/datasets/VTANR::conserved-land-inventory/about" target="_blank" rel="noopener">VT Conserved Lands Inventory</a>'
+        },
+        {
+            id: 'parcels', name: 'Parcels',
+            url: 'https://services1.arcgis.com/BkFxaEFNwHqX3tAw/arcgis/rest/services/FS_VCGI_VTPARCELS_WM_NOCACHE_v2/FeatureServer/1',
+            where: "TOWN='THETFORD'",
+            style: { color: '#4a4a4a', weight: 0.8, opacity: 0.8 },
+            fields: { 'SPAN': 'GLIST_SPAN', 'Address': 'E911ADDR', 'Acres': 'ACRESGL' },
+            source: '<a href="https://vcgi.vermont.gov/" target="_blank" rel="noopener">VCGI</a>'
+        },
+        {
+            id: 'townlands', name: 'Town land',
+            geojson: 'https://thetford-vt-conservation.github.io/maps/data/TownLands.geojson',
+            style: { color: '#6a3d9a', weight: 2, opacity: 0.9, dashArray: '6 4', innerShade: 7 },
+            fields: { 'SPAN': 'GLIST_SPAN', 'Address': 'E911ADDR' },
+            source: '<a href="https://vcgi.vermont.gov/" target="_blank" rel="noopener">VCGI</a>'
+        },
+        {
+            id: 'uva', name: 'Current use (UVA)',
+            url: 'https://anrmaps.vermont.gov/arcgis/rest/services/Open_Data/OPENDATA_ANR_CADASTRAL_SP_NOCACHE_v2/MapServer/41',
+            where: "SPAN LIKE '642-202-%'",   // Thetford's town code
+            style: { color: '#c51b7d', weight: 1.5, opacity: 0.9, dashArray: '2 3', innerShade: 6 },
+            fields: { 'SPAN': 'SPAN', 'Enrolled': 'ENTRYYEAR' },
+            source: '<a href="https://fpr.vermont.gov/forest/UseValueAppraisal" target="_blank" rel="noopener">Use Value Appraisal</a>'
+        },
+        {
+            id: 'zoning', name: 'Zoning districts',
+            url: 'https://services1.arcgis.com/u6q3LNruiYmDjGX5/arcgis/rest/services/VTZONING_THETFORD_20110926_poly_zones/FeatureServer/0',
+            where: "NOT (DISTRICT ='RURAL RESIDENTIAL')",
+            style: { color: '#1f1f1f', weight: 1.5, opacity: 0.8, dashArray: '8 3 2 3', innerShade: 6 },
+            fields: { 'District': 'DISTRICT' },
+            idField: 'FID',
+            source: '<a href="https://www.trorc.org/" target="_blank" rel="noopener">TRORC</a>'
+        }
+    ],
+    overlayLayers: {},    // overlay id -> Leaflet layer, once switched on
+
+    /**
+     * A canvas renderer that shades a band just inside a polygon's outline (the
+     * innerShade option, in pixels), as printed maps do for borders, so an outline
+     * shows which side is inside. The polygon's own path is the clip: a wide, faint
+     * stroke along it is cut off outside, leaving only its inner half.
+     */
+    ShadedCanvas: L.Canvas.extend({
+        _fillStroke(ctx, layer) {
+            const o = layer.options;
+            if (o.innerShade && layer instanceof L.Polygon) {
+                ctx.save();
+                ctx.clip('evenodd');
+                ctx.setLineDash([]);
+                ctx.globalAlpha = 0.22;
+                ctx.lineWidth = o.innerShade * 2;
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = o.color;
+                ctx.stroke();
+                ctx.restore();
+            }
+            L.Canvas.prototype._fillStroke.call(this, ctx, layer);
+        }
+    }),
 
     /**
      * Fetch a data file, revalidating rather than trusting the browser cache.
@@ -44,7 +127,19 @@ const App = {
         // gets added or removed underneath it.
         this.map.createPane('townPane').style.zIndex = 450;
         this.map.getPane('townPane').style.pointerEvents = 'none';
+        // Overlays sit above the tiers and below the town outline. They never take
+        // clicks: a click always reaches the tier beneath, and the popup reports the
+        // overlay features at that point itself.
+        this.map.createPane('overlayRefPane').style.zIndex = 440;
+        this.map.getPane('overlayRefPane').style.pointerEvents = 'none';
+        this.overlayRenderer = new this.ShadedCanvas({ pane: 'overlayRefPane' });
         await this.addTownBoundary();
+        this.addOverlayControl();
+        // A click on open ground (no tier there) still reports any overlays.
+        this.map.on('click', e => {
+            if (this._featureClicked) { this._featureClicked = false; return; }
+            this.showDetails(e.latlng, this.mapById(this.mapId), [], null);
+        });
 
         this.data = await this.getJSON('data/layers.json');
 
@@ -66,6 +161,9 @@ const App = {
                 if (lc.name) l.name = lc.name;
                 if (lc.goal !== undefined) l.goal = lc.goal;
                 if (lc.motivation !== undefined) l.motivation = lc.motivation;
+                // A hand-written method, for layers whose generated steps alone can't be
+                // read without knowing how their source data was put together.
+                if (lc.how_built) l.method = lc.how_built;
                 this.layersById[l.id] = l;
             }
         }
@@ -88,6 +186,7 @@ const App = {
     async addTownBoundary() {
         try {
             const geojson = await this.getJSON('data/town.geojson');
+            this.townGeoJSON = geojson;
             this.townLayer = L.geoJSON(geojson, {
                 pane: 'townPane',
                 interactive: false,
@@ -209,6 +308,7 @@ const App = {
 
         if (this.layer) this.map.removeLayer(this.layer);
         this.hideHover();
+        this.map.closePopup();
 
         this.layer = isMap
             ? this.buildTieredLayer(geojson, m)
@@ -247,6 +347,14 @@ const App = {
             if (hovered) { layer.resetStyle(hovered); hovered = null; }
             self.hideHover();
         });
+        layer.on('click', e => {
+            if (!e.layer || !e.layer.feature) return;
+            self._featureClicked = true;
+            const p = e.layer.feature.properties;
+            let ids = p.contributing_rules || [];
+            if (typeof ids === 'string') { try { ids = JSON.parse(ids); } catch (err) { ids = []; } }
+            self.showDetails(e.latlng, m, ids, p.tier);
+        });
         return layer;
     },
 
@@ -258,7 +366,289 @@ const App = {
         });
         layer.on('mouseover', () => self.showHover({ single: info }));
         layer.on('mouseout', () => self.hideHover());
+        layer.on('click', e => {
+            self._featureClicked = true;
+            self.showDetails(e.latlng, self.mapById(info.mapId), [info.id], null);
+        });
         return layer;
+    },
+
+    /**
+     * Popup listing, for each layer present at a point, the source features it was
+     * drawn from there. The tier heads it in the tiered view; a single layer's view
+     * already says which layer it is.
+     */
+    async showDetails(latlng, m, ids, tier) {
+        const layers = m.layers.filter(l => ids.includes(l.id));
+        const overlays = this.overlayHitsAt(latlng);
+        if (!layers.length && !overlays.length) return;
+        const popup = L.popup({ className: 'pt-popup', maxWidth: 320, maxHeight: 380, autoPanPadding: [24, 24] })
+            .setLatLng(latlng)
+            .setContent('<div class="pt"><p class="pt-note">Loading details&hellip;</p></div>')
+            .openOn(this.map);
+
+        const parts = await Promise.all(layers.map(async l => {
+            let d;
+            try {
+                d = await this.load(`details:${l.id}`, `data/details-${l.id}.geojson`);
+            } catch (e) {
+                return this.layerDetailHtml(l, null, tier);
+            }
+            return this.layerDetailHtml(l, this.hitsAt(d, latlng), tier);
+        }));
+        if (!this.map.hasLayer(popup)) return;   // closed, or replaced by a newer click
+
+        const head = tier && m.tier_labels[tier]
+            ? `<div class="pt-tier"><span class="swatch" style="background:${m.tier_colors[tier]}"></span>${m.tier_labels[tier]}</div>`
+            : '';
+        const extra = overlays.length
+            ? '<div class="pt-layer pt-overlays">' + overlays.map(o => {
+                const rows = Object.entries(o.fields)
+                    .map(([k, v]) => `<tr><th>${this.escape(k)}</th><td>${this.escape(v)}</td></tr>`).join('');
+                return `<div class="pt-src">${this.escape(o.name)}</div>` + (rows ? `<table>${rows}</table>` : '');
+            }).join('') + '</div>'
+            : '';
+        popup.setContent(`<div class="pt">${head}${parts.join('')}${extra}</div>`);
+    },
+
+    /** Features of the switched-on overlays that contain a point, already loaded on the map. */
+    overlayHitsAt(latlng) {
+        const kx = 111320 * Math.cos(latlng.lat * Math.PI / 180), ky = 110540;
+        const toXY = c => [(c[0] - latlng.lng) * kx, (c[1] - latlng.lat) * ky];
+        const out = [];
+        for (const o of this.OVERLAYS) {
+            const layer = this.overlayLayers[o.id];
+            if (!layer || !this.map.hasLayer(layer)) continue;
+            const feats = [];
+            const visit = l => { if (l.feature) feats.push(l.feature); };
+            layer.eachFeature ? layer.eachFeature(visit) : layer.eachLayer(visit);
+            for (const f of feats) {
+                if (!f.geometry || this.distanceTo(f.geometry, toXY) > 0) continue;
+                const fields = {};
+                for (const [label, key] of Object.entries(o.fields)) {
+                    let v = (f.properties || {})[key];
+                    if (v === null || v === undefined || String(v).trim() === '') continue;
+                    if (typeof v === 'number' && !Number.isInteger(v)) v = Math.round(v * 10) / 10;
+                    fields[label] = v;
+                }
+                out.push({ name: o.name, fields });
+            }
+        }
+        return out;
+    },
+
+    /** The Layers button: a collapsed control on the map that switches overlays. */
+    addOverlayControl() {
+        const self = this;
+        const Control = L.Control.extend({
+            options: { position: 'topleft' },
+            onAdd() {
+                const box = L.DomUtil.create('div', 'overlay-control');
+                box.innerHTML = `
+                    <button type="button" class="overlay-toggle" aria-expanded="false" title="Reference overlays">
+                        <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 1.5 5 8 8.5 14.5 5 8 1.5Z M1.5 8 8 11.5 14.5 8 M1.5 11 8 14.5 14.5 11" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+                        <span>Layers</span>
+                    </button>
+                    <div class="overlay-list" hidden>
+                        <div class="overlay-caption">Overlays</div>
+                        ${self.OVERLAYS.map(o => `
+                            <label class="overlay-row">
+                                <input type="checkbox" data-overlay="${o.id}">
+                                <svg class="overlay-swatch" width="22" height="12" aria-hidden="true">
+                                    ${o.style.innerShade ? `<rect x="3" y="3" width="16" height="6" fill="none" stroke="${o.style.color}"
+                                          stroke-opacity="0.22" stroke-width="4"/>` : ''}
+                                    <rect x="1" y="1" width="20" height="10" fill="none" stroke="${o.style.color}"
+                                          stroke-width="${Math.max(o.style.weight, 1.2)}" stroke-dasharray="${o.style.dashArray || ''}"/>
+                                </svg>
+                                <span>${o.name}</span>
+                            </label>`).join('')}
+                        <div class="overlay-note">Sources: ${[...new Set(self.OVERLAYS.map(o => o.source))].join(', ')}</div>
+                    </div>`;
+                L.DomEvent.disableClickPropagation(box);
+                L.DomEvent.disableScrollPropagation(box);
+                const btn = box.querySelector('.overlay-toggle');
+                const list = box.querySelector('.overlay-list');
+                btn.addEventListener('click', () => {
+                    list.hidden = !list.hidden;
+                    btn.setAttribute('aria-expanded', String(!list.hidden));
+                });
+                box.querySelectorAll('input[data-overlay]').forEach(cb =>
+                    cb.addEventListener('change', () => self.setOverlay(cb.dataset.overlay, cb.checked)));
+                return box;
+            }
+        });
+        new Control().addTo(this.map);
+    },
+
+    async setOverlay(id, on) {
+        const o = this.OVERLAYS.find(x => x.id === id);
+        let layer = this.overlayLayers[id];
+        if (!on) { if (layer) this.map.removeLayer(layer); return; }
+        if (!layer) {
+            const style = Object.assign({ fill: false, interactive: false }, o.style);
+            if (o.geojson || o.townOnly) {
+                const data = o.geojson ? await (await fetch(o.geojson)).json() : await this.fetchInTown(o);
+                layer = L.geoJSON(data, { pane: 'overlayRefPane', renderer: this.overlayRenderer, interactive: false, style });
+            } else {
+                // Like the main map: fetched live, for the current view, simplified.
+                layer = L.esri.featureLayer({
+                    url: o.url, where: o.where || '1=1', fields: [o.idField || 'OBJECTID', ...Object.values(o.fields)],
+                    pane: 'overlayRefPane', renderer: this.overlayRenderer, interactive: false,
+                    simplifyFactor: 0.1, precision: 6, style: () => style
+                });
+                // The state's servers sometimes time out on a first request; try
+                // again a few times before leaving the overlay part-drawn.
+                let retries = 0;
+                layer.on('requesterror', () => {
+                    if (retries++ < 3) setTimeout(() => this.map.hasLayer(layer) && layer.refresh(), 3000);
+                });
+            }
+            this.overlayLayers[id] = layer;
+        }
+        if (!this.map.hasLayer(layer)) layer.addTo(this.map);
+    },
+
+    layerDetailHtml(l, hits, tier) {
+        const out = [`<div class="pt-layer"><div class="pt-name">${this.escape(l.name)}</div>`];
+        if (!tier) out.push(`<div class="pt-standing">${l.tier_label}</div>`);
+        if (!hits) {
+            out.push('<p class="pt-note">Details could not be loaded.</p>');
+        } else if (!hits.length) {
+            out.push('<p class="pt-note">No source record at this exact spot.</p>');
+        }
+        for (const h of hits || []) {
+            const rows = Object.entries(h.feature.properties).filter(([k]) => k !== '_s')
+                .map(([k, v]) => `<tr><th>${this.escape(k)}</th><td>${this.escape(v)}</td></tr>`).join('');
+            // Inside a buffer, say how far off the feature itself lies.
+            const away = h.dist > this.CLICK_TOLERANCE_M
+                ? `<span class="pt-away">${Math.round(h.dist * 3.28084).toLocaleString()} ft away</span>` : '';
+            out.push(`<div class="pt-src">${this.escape(h.source.name)}${away}</div>` +
+                     (rows ? `<table>${rows}</table>` : ''));
+        }
+        out.push('</div>');
+        return out.join('');
+    },
+
+    /** Source features within reach of a point (their buffer plus a click's slack), nearest first per source. */
+    hitsAt(d, latlng) {
+        if (!d._prepared) {
+            for (const f of d.features) f._bbox = this.bbox(f.geometry);
+            d._prepared = true;
+        }
+        const lat0 = latlng.lat, lng0 = latlng.lng;
+        const kx = 111320 * Math.cos(lat0 * Math.PI / 180), ky = 110540;
+        const toXY = c => [(c[0] - lng0) * kx, (c[1] - lat0) * ky];
+        const bySource = {};
+        for (const f of d.features) {
+            const src = d.sources[f.properties._s];
+            const reach = src.buffer_m + this.CLICK_TOLERANCE_M;
+            const b = f._bbox;
+            // Cheap reject: the click is farther than reach from the bounding box.
+            const dx = Math.max(b[0] - lng0, 0, lng0 - b[2]) * kx;
+            const dy = Math.max(b[1] - lat0, 0, lat0 - b[3]) * ky;
+            if (dx * dx + dy * dy > reach * reach) continue;
+            const dist = this.distanceTo(f.geometry, toXY);
+            if (dist > reach) continue;
+            (bySource[f.properties._s] = bySource[f.properties._s] || []).push({ feature: f, source: src, dist });
+        }
+        return Object.keys(bySource).sort((a, b) => a - b).flatMap(k =>
+            bySource[k].sort((a, b) => a.dist - b.dist).slice(0, this.FEATURES_PER_SOURCE));
+    },
+
+    bbox(g) {
+        const b = [Infinity, Infinity, -Infinity, -Infinity];
+        const walk = c => {
+            if (typeof c[0] === 'number') {
+                b[0] = Math.min(b[0], c[0]); b[1] = Math.min(b[1], c[1]);
+                b[2] = Math.max(b[2], c[0]); b[3] = Math.max(b[3], c[1]);
+            } else c.forEach(walk);
+        };
+        if (g.type === 'GeometryCollection') g.geometries.forEach(x => walk(x.coordinates));
+        else walk(g.coordinates);
+        return b;
+    },
+
+    /** Metres from the origin of toXY's local plane to a geometry; 0 inside a polygon. */
+    distanceTo(g, toXY) {
+        const segDist = (a, b) => {
+            const vx = b[0] - a[0], vy = b[1] - a[1];
+            const len = vx * vx + vy * vy;
+            const t = len ? Math.max(0, Math.min(1, -(a[0] * vx + a[1] * vy) / len)) : 0;
+            return Math.hypot(a[0] + t * vx, a[1] + t * vy);
+        };
+        const lineDist = line => {
+            const pts = line.map(toXY);
+            if (pts.length === 1) return Math.hypot(pts[0][0], pts[0][1]);
+            let best = Infinity;
+            for (let i = 1; i < pts.length; i++) best = Math.min(best, segDist(pts[i - 1], pts[i]));
+            return best;
+        };
+        // Even-odd ray cast across every ring, so holes come out right.
+        const polyDist = rings => {
+            let inside = false, best = Infinity;
+            for (const ring of rings) {
+                const pts = ring.map(toXY);
+                for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+                    const [xi, yi] = pts[i], [xj, yj] = pts[j];
+                    if ((yi > 0) !== (yj > 0) && 0 < (xj - xi) * (0 - yi) / (yj - yi) + xi) inside = !inside;
+                }
+                best = Math.min(best, lineDist(ring));
+            }
+            return inside ? 0 : best;
+        };
+        const c = g.coordinates;
+        switch (g.type) {
+            case 'Point': return lineDist([c]);
+            case 'MultiPoint': return Math.min(...c.map(p => lineDist([p])));
+            case 'LineString': return lineDist(c);
+            case 'MultiLineString': return Math.min(...c.map(lineDist));
+            case 'Polygon': return polyDist(c);
+            case 'MultiPolygon': return Math.min(...c.map(polyDist));
+            case 'GeometryCollection': return Math.min(...g.geometries.map(x => this.distanceTo(x, toXY)));
+            default: return Infinity;
+        }
+    },
+
+    /**
+     * Every feature of a service that reaches inside Thetford, fetched once. For a
+     * layer with no town field: query the town's bounding box, then keep a feature
+     * only if some vertex lies well inside the town line, so neighbours that just
+     * share the boundary are dropped.
+     */
+    async fetchInTown(o) {
+        const b = L.geoJSON(this.townGeoJSON).getBounds();
+        const town = this.townGeoJSON.features[0].geometry;
+        const features = [];
+        for (let offset = 0; ; offset += 2000) {
+            const q = new URLSearchParams({
+                where: o.where || '1=1', outFields: [o.idField || 'OBJECTID', ...Object.values(o.fields)].join(','),
+                geometry: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].join(','),
+                geometryType: 'esriGeometryEnvelope', inSR: 4326, spatialRel: 'esriSpatialRelIntersects',
+                outSR: 4326, geometryPrecision: 6, maxAllowableOffset: 0.00002,
+                resultOffset: offset, resultRecordCount: 2000, f: 'geojson'
+            });
+            const page = await (await fetch(`${o.url}/query?${q}`)).json();
+            features.push(...(page.features || []));
+            if (!page.exceededTransferLimit && !(page.properties || {}).exceededTransferLimit) break;
+        }
+        const INSIDE_M = 20;
+        const inside = ([lng, lat]) => {
+            const kx = 111320 * Math.cos(lat * Math.PI / 180), ky = 110540;
+            const toXY = c => [(c[0] - lng) * kx, (c[1] - lat) * ky];
+            // distanceTo is 0 inside; a point well inside is far from every town edge too.
+            if (this.distanceTo(town, toXY) > 0) return false;
+            const rings = town.type === 'Polygon' ? town.coordinates : town.coordinates.flat();
+            return this.distanceTo({ type: 'MultiLineString', coordinates: rings }, toXY) > INSIDE_M;
+        };
+        const vertices = g => g.type === 'Polygon' ? g.coordinates.flat()
+            : g.type === 'MultiPolygon' ? g.coordinates.flat(2) : [];
+        return { type: 'FeatureCollection',
+                 features: features.filter(f => f.geometry && vertices(f.geometry).some(inside)) };
+    },
+
+    escape(v) {
+        return String(v).replace(/[&<>"']/g, ch =>
+            ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
     },
 
     showHover(props, m) {
@@ -300,7 +690,16 @@ const App = {
 
         if (l.goal) b.push(`<p class="hdr">Goal</p><p>${l.goal}</p>`);
         if (l.motivation) b.push(`<p class="hdr">Why it matters</p><p>${l.motivation}</p>`);
-        if (l.how_built) b.push(`<p class="hdr">How it was defined</p><p class="built">${l.how_built}</p>`);
+        // One plain-language line per step, in order (exact codes live in LAYERS.md).
+        const steps = Array.isArray(l.how_built) ? l.how_built : (l.how_built ? [l.how_built] : []);
+        if (l.method || steps.length) {
+            b.push('<p class="hdr">How it was defined</p>');
+            if (l.method) b.push(`<p>${l.method}</p>`);
+            // With a written method above it, the generated list is the exact rule:
+            // kept visible so the layer stays reproducible, but set smaller.
+            if (steps.length) b.push((l.method ? '<p class="term">Exact rule:</p>' : '') +
+                `<ol class="built${l.method ? ' exact' : ''}">${steps.map(t => `<li>${t}</li>`).join('')}</ol>`);
+        }
         if (l.sources && l.sources.length) {
             const s = l.sources.map(x => x.url
                 ? `<a href="${x.url}" target="_blank" rel="noopener">${x.name}</a>` : x.name).join(', ');

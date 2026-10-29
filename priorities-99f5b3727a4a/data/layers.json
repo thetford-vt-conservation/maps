@@ -25,7 +25,9 @@
           "color": "#2c7fb8",
           "goal": "",
           "motivation": "Amphibian would move 600ft max",
-          "how_built": "Amphibian Road Crossings (AmphibConnectivity = Average, High; 300 ft buffer)",
+          "how_built": [
+            "Start with Amphibian Road Crossings, where amphibian connectivity is high or average, buffered 300 ft"
+          ],
           "sources": [
             {
               "name": "Thetford Natural Resource Inventory",
@@ -43,7 +45,9 @@
           "color": "#2c7fb8",
           "goal": "",
           "motivation": "Buffer needs needs to be verified.",
-          "how_built": "Vernal Pool Atlas (mappedPoolStatus = Confirmed; 600 ft buffer)",
+          "how_built": [
+            "Start with Vernal Pool Atlas, where status is confirmed, buffered 600 ft"
+          ],
           "sources": [
             {
               "name": "Vermont Vernal Pool Atlas",
@@ -54,24 +58,6 @@
           "features": 10
         },
         {
-          "id": "custom_c2ea57e7",
-          "name": "Natural Communities",
-          "tier": "red",
-          "tier_label": "Highest importance",
-          "color": "#2c7fb8",
-          "goal": "",
-          "motivation": "",
-          "how_built": "Natural Communities (VCD) (S_RANK = S2, S3)",
-          "sources": [
-            {
-              "name": "Vermont Conservation Design",
-              "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
-            }
-          ],
-          "acres": 62,
-          "features": 5
-        },
-        {
           "id": "custom_0d7d7d49",
           "name": "Riparian Connectivity",
           "tier": "red",
@@ -79,7 +65,9 @@
           "color": "#2c7fb8",
           "goal": "",
           "motivation": "",
-          "how_built": "Riparian Wildlife Connectivity (VCD)",
+          "how_built": [
+            "Start with Riparian Wildlife Connectivity (VCD)"
+          ],
           "sources": [
             {
               "name": "Vermont Conservation Design",
@@ -90,6 +78,34 @@
           "features": 686
         },
         {
+          "id": "custom_bb4680ce",
+          "name": "Significant Wetlands",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "",
+          "how_built": [
+            "Start with Wetlands (VSWI + Thetford NRI), where protection level is strict, buffered 50 ft"
+          ],
+          "sources": [
+            {
+              "name": "Vermont Significant Wetland Inventory (VT DEC)",
+              "url": "https://dec.vermont.gov/watershed/wetlands/protect/protect"
+            },
+            {
+              "name": "Thetford Natural Resource Inventory / Arrowwood Environmental",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            },
+            {
+              "name": "VT Natural Heritage Inventory",
+              "url": "https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
+            }
+          ],
+          "acres": 615,
+          "features": 73
+        },
+        {
           "id": "custom_0cf3cd91",
           "name": "Threatened Species",
           "tier": "red",
@@ -97,15 +113,18 @@
           "color": "#2c7fb8",
           "goal": "",
           "motivation": "",
-          "how_built": "Rare, Threatened & Endangered Species (VCD) (VT_LISTED = Y) combined with Rare, Threatened & Endangered Species (VCD) (US_LISTED = Y)",
+          "how_built": [
+            "Start with Rare, Threatened & Endangered Species (Natural Heritage), where listed by Vermont",
+            "Add Rare, Threatened & Endangered Species (Natural Heritage), where listed federally"
+          ],
           "sources": [
             {
-              "name": "Vermont Conservation Design",
-              "url": "https://vtfishandwildlife.com/conserve/vermont-conservation-design"
+              "name": "Vermont Fish & Wildlife, Natural Heritage Inventory",
+              "url": "https://vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
             }
           ],
-          "acres": 3080,
-          "features": 11
+          "acres": 77,
+          "features": 12
         },
         {
           "id": "custom_0a14cdde",
@@ -115,7 +134,10 @@
           "color": "#2c7fb8",
           "goal": "",
           "motivation": "",
-          "how_built": "Forest Connectivity Blocks (Connectivity_Blocks_Priority = Highest Priority) intersected with Wildlife Road Crossings (OverallConnectivity = Above Average, Average, Well Above Average; 100 ft buffer)",
+          "how_built": [
+            "Start with Forest Connectivity Blocks, where priority is highest",
+            "Keep only the parts within Wildlife Road Crossings, where overall connectivity is well above average, above average or average, buffered 100 ft"
+          ],
           "sources": [
             {
               "name": "Vermont Agency of Natural Resources",
@@ -130,24 +152,6 @@
           "features": 71
         },
         {
-          "id": "custom_2bbc6497",
-          "name": "Wetlands",
-          "tier": "red",
-          "tier_label": "Highest importance",
-          "color": "#2c7fb8",
-          "goal": "",
-          "motivation": "",
-          "how_built": "Wetlands (50 ft buffer)",
-          "sources": [
-            {
-              "name": "VT Agency of Natural Resources",
-              "url": "https://anr.vermont.gov/"
-            }
-          ],
-          "acres": 3472,
-          "features": 486
-        },
-        {
           "id": "custom_77a73964",
           "name": "Highest Priority Connectivity Blocks",
           "tier": "yellow",
@@ -155,7 +159,9 @@
           "color": "#7fcdbb",
           "goal": "",
           "motivation": "",
-          "how_built": "Forest Connectivity Blocks (Connectivity_Blocks_Priority = Highest Priority)",
+          "how_built": [
+            "Start with Forest Connectivity Blocks, where priority is highest"
+          ],
           "sources": [
             {
               "name": "Vermont Agency of Natural Resources",
@@ -166,6 +172,75 @@
           "features": 9
         },
         {
+          "id": "custom_0ce97644",
+          "name": "Other Rare Species",
+          "tier": "yellow",
+          "tier_label": "Medium importance",
+          "color": "#7fcdbb",
+          "goal": "",
+          "motivation": "",
+          "how_built": [
+            "Start with Rare, Threatened & Endangered Species (Natural Heritage), where listed by Vermont is not listed by Vermont and listed federally is not listed federally"
+          ],
+          "sources": [
+            {
+              "name": "Vermont Fish & Wildlife, Natural Heritage Inventory",
+              "url": "https://vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
+            }
+          ],
+          "acres": 258,
+          "features": 13
+        },
+        {
+          "id": "custom_2bbc6497",
+          "name": "Other Wetlands",
+          "tier": "yellow",
+          "tier_label": "Medium importance",
+          "color": "#7fcdbb",
+          "goal": "",
+          "motivation": "",
+          "how_built": [
+            "Start with Wetlands (VSWI + Thetford NRI), where protection level is caution, buffered 50 ft",
+            "Remove the parts within Wetlands (VSWI + Thetford NRI), where protection level is strict, buffered 50 ft"
+          ],
+          "sources": [
+            {
+              "name": "Vermont Significant Wetland Inventory (VT DEC)",
+              "url": "https://dec.vermont.gov/watershed/wetlands/protect/protect"
+            },
+            {
+              "name": "Thetford Natural Resource Inventory / Arrowwood Environmental",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            },
+            {
+              "name": "VT Natural Heritage Inventory",
+              "url": "https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
+            }
+          ],
+          "acres": 3204,
+          "features": 558
+        },
+        {
+          "id": "custom_79610eba",
+          "name": "Priority Connectivity Blocks",
+          "tier": "green",
+          "tier_label": "Important",
+          "color": "#edf8b1",
+          "goal": "",
+          "motivation": "",
+          "how_built": [
+            "Start with Forest Connectivity Blocks, where priority is priority"
+          ],
+          "sources": [
+            {
+              "name": "Vermont Agency of Natural Resources",
+              "url": "https://anr.vermont.gov/"
+            }
+          ],
+          "acres": 3152,
+          "features": 6
+        },
+        {
           "id": "custom_d324ef92",
           "name": "Second Tier Crossings",
           "tier": "green",
@@ -173,7 +248,9 @@
           "color": "#edf8b1",
           "goal": "",
           "motivation": "",
-          "how_built": "Wildlife Road Crossings (OverallConnectivity = Above Average, Well Above Average, Average; 50 ft buffer)",
+          "how_built": [
+            "Start with Wildlife Road Crossings, where overall connectivity is well above average, above average or average, buffered 50 ft"
+          ],
           "sources": [
             {
               "name": "Thetford Natural Resource Inventory",
@@ -182,6 +259,26 @@
           ],
           "acres": 201,
           "features": 82
+        },
+        {
+          "id": "custom_485e642b",
+          "name": "Uncommon Species",
+          "tier": "green",
+          "tier_label": "Important",
+          "color": "#edf8b1",
+          "goal": "",
+          "motivation": "",
+          "how_built": [
+            "Start with Uncommon Species (Natural Heritage)"
+          ],
+          "sources": [
+            {
+              "name": "Vermont Fish & Wildlife, Natural Heritage Inventory",
+              "url": "https://vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
+            }
+          ],
+          "acres": 309,
+          "features": 14
         }
       ]
     },
@@ -204,39 +301,103 @@
       "layers": [
         {
           "id": "custom_6c658a98",
-          "name": "Prime Agricultural Soils",
+          "name": "Top-Rated Soils, Open Land",
           "tier": "red",
           "tier_label": "Highest importance",
           "color": "#2c7fb8",
           "goal": "",
           "motivation": "",
-          "how_built": "Agricultural Soils (PRIME = Prime, Prime (b), Prime (f))",
+          "how_built": [
+            "Start with NRCS Soil Survey (Thetford NRI, 2009), where agricultural value group is 1 or 2",
+            "Keep only the parts within Open Fields (Thetford NRI, 2016 imagery)"
+          ],
           "sources": [
             {
-              "name": "VT Center for Geographic Information",
-              "url": "https://vcgi.vermont.gov/"
+              "name": "USDA Natural Resources Conservation Service",
+              "url": "https://efotg.sc.egov.usda.gov/references/public/VT/Important_Farmlands_Narrative-update-April2018-Final.pdf"
+            },
+            {
+              "name": "Thetford Natural Resource Inventory",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
             }
           ],
-          "acres": 2557,
-          "features": 159
+          "acres": 936,
+          "features": 216
         },
         {
-          "id": "custom_b38dc1ed",
-          "name": "Agricultural Soils of Statewide Importance",
+          "id": "custom_65d165d2",
+          "name": "Other Top-Rated Soils",
           "tier": "yellow",
           "tier_label": "Medium importance",
           "color": "#7fcdbb",
           "goal": "",
           "motivation": "",
-          "how_built": "Agricultural Soils (PRIME = Statewide, Statewide (b))",
+          "how_built": [
+            "Start with NRCS Soil Survey (Thetford NRI, 2009), where agricultural value group is 1 or 2",
+            "Remove the parts within Open Fields (Thetford NRI, 2016 imagery)"
+          ],
           "sources": [
             {
-              "name": "VT Center for Geographic Information",
-              "url": "https://vcgi.vermont.gov/"
+              "name": "USDA Natural Resources Conservation Service",
+              "url": "https://efotg.sc.egov.usda.gov/references/public/VT/Important_Farmlands_Narrative-update-April2018-Final.pdf"
+            },
+            {
+              "name": "Thetford Natural Resource Inventory",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
             }
           ],
-          "acres": 3907,
-          "features": 170
+          "acres": 1164,
+          "features": 147
+        },
+        {
+          "id": "custom_b38dc1ed",
+          "name": "Productive Soils, Open Land",
+          "tier": "yellow",
+          "tier_label": "Medium importance",
+          "color": "#7fcdbb",
+          "goal": "",
+          "motivation": "",
+          "how_built": [
+            "Start with NRCS Soil Survey (Thetford NRI, 2009), where agricultural value group is 3&ndash;7",
+            "Keep only the parts within Open Fields (Thetford NRI, 2016 imagery)"
+          ],
+          "sources": [
+            {
+              "name": "USDA Natural Resources Conservation Service",
+              "url": "https://efotg.sc.egov.usda.gov/references/public/VT/Important_Farmlands_Narrative-update-April2018-Final.pdf"
+            },
+            {
+              "name": "Thetford Natural Resource Inventory",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            }
+          ],
+          "acres": 711,
+          "features": 267
+        },
+        {
+          "id": "custom_84edb850",
+          "name": "Other Productive Soils",
+          "tier": "green",
+          "tier_label": "Important",
+          "color": "#edf8b1",
+          "goal": "",
+          "motivation": "",
+          "how_built": [
+            "Start with NRCS Soil Survey (Thetford NRI, 2009), where agricultural value group is 3&ndash;7",
+            "Remove the parts within Open Fields (Thetford NRI, 2016 imagery)"
+          ],
+          "sources": [
+            {
+              "name": "USDA Natural Resources Conservation Service",
+              "url": "https://efotg.sc.egov.usda.gov/references/public/VT/Important_Farmlands_Narrative-update-April2018-Final.pdf"
+            },
+            {
+              "name": "Thetford Natural Resource Inventory",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            }
+          ],
+          "acres": 3652,
+          "features": 351
         }
       ]
     }
