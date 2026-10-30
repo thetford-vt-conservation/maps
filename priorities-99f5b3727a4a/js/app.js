@@ -25,6 +25,7 @@ const App = {
     data: null,           // data/layers.json: { maps: [...] }
     content: null,        // data/content.json: the descriptive text
     layersById: {},       // every layer of every map, by rule id
+    layersBySlug: {},     // the same, by the readable name used in links (#significant-wetlands)
     cache: {},            // geojson by key, fetched once
     selected: null,       // a map id (its tiered view) or a layer id
     mapId: null,          // the map whose layers the panel is listing
@@ -164,7 +165,11 @@ const App = {
                 // A hand-written method, for layers whose generated steps alone can't be
                 // read without knowing how their source data was put together.
                 if (lc.how_built) l.method = lc.how_built;
+                // Links use a readable slug, fixed in content.json so renaming a layer
+                // doesn't break links already shared; a layer without one gets it from its name.
+                l.slug = lc.slug || this.slugify(l.name);
                 this.layersById[l.id] = l;
+                this.layersBySlug[l.slug] = l;
             }
         }
 
@@ -174,11 +179,21 @@ const App = {
         window.addEventListener('hashchange', () => this.select(this.keyFromHash()));
     },
 
-    /** The view named in the URL; old #__tiered__ links meant the only map there was. */
+    /**
+     * The view named in the URL: a map id or a layer slug. Older links named a layer
+     * by its internal id (#custom_bb4680ce), and #__tiered__ meant the only map there
+     * was; both still open the right view.
+     */
     keyFromHash() {
         const h = decodeURIComponent(location.hash.slice(1));
-        return (!h || h === '__tiered__') ? this.data.maps[0].id : h;
+        if (!h || h === '__tiered__') return this.data.maps[0].id;
+        return (this.layersBySlug[h] || {}).id || h;
     },
+
+    /** What the URL shows for a view: a map's id, or a layer's slug. */
+    hashFor(key) { return this.mapById(key) ? key : (this.layersById[key] || {}).slug || key; },
+
+    slugify(name) { return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); },
 
     mapById(id) { return this.data.maps.find(m => m.id === id); },
 
@@ -292,9 +307,16 @@ const App = {
                 key = m.id;
             }
         }
+        // Keep the URL naming this view. An old-style or unknown link is rewritten in
+        // place rather than added to history.
+        const hash = this.hashFor(key);
+        if (decodeURIComponent(location.hash.slice(1)) !== hash) {
+            const replace = this.keyFromHash() === key || !this.layersById[this.keyFromHash()] && !this.mapById(this.keyFromHash());
+            if (replace) history.replaceState(null, '', '#' + hash);
+            else location.hash = hash;
+        }
         if (this.selected === key) return;
         this.selected = key;
-        if (location.hash.slice(1) !== key) location.hash = key;
 
         if (m.id !== this.mapId) {
             this.mapId = m.id;
