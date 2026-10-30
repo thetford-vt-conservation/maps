@@ -37,7 +37,7 @@
     "name": "Other Wetlands",
     "goal": "Treat every other mapped wetland and its 50 ft margin as land where change needs care.",
     "motivation": "Wetlands store floodwater, filter runoff and support a disproportionate share of Vermont's rare species. Thetford's are mostly small, common types, easy to lose one at a time. Every state-mapped wetland in town is Class II, so most work in one or its 50 ft buffer needs a permit under the Vermont Wetland Rules (<a href=\"https://dec.vermont.gov/watershed/wetlands/contact/frequently-asked-questions-about-wetlands\" target=\"_blank\" rel=\"noopener\">Vermont DEC</a>). Vermont has lost as much as 35% of its original wetlands (<a href=\"https://dec.vermont.gov/watershed/wetlands/protect/protect\" target=\"_blank\" rel=\"noopener\">Vermont DEC</a>).",
-    "how_built": "The state's wetland inventory (2024) plus wetlands Arrowwood Environmental mapped in 2011 that the state hasn't, minus Significant Wetlands, buffered 50 ft. The 2011-only areas are advisory: places to check before work. Areas Arrowwood rated low-confidence, farm fields and man-made ponds are left out. Built by build_wetland_layer.py."
+    "how_built": "The state's wetland inventory (2024) plus wetlands Arrowwood Environmental mapped in 2011 that the state hasn't, minus Significant Wetlands, buffered 50 ft. The 2011-only areas are advisory: places to check before work. Areas Arrowwood rated low-confidence, farm fields and man-made ponds are left out."
   },
   "custom_77a73964": {
     "name": "Highest Priority Connectivity Blocks",
@@ -73,7 +73,7 @@
     "name": "Significant Wetlands",
     "goal": "Avoid any development, clearing, filling or drainage in Thetford's rare, uncommon and state-significant wetlands.",
     "motivation": "Wetlands the town cannot replace: rare types such as the intermediate fen at Gillette Swamp, the wet clayplain forest at Connant Swamp and the sugar maple floodplain forest at Post Mills, every uncommon (S3) type, from spruce&ndash;fir&ndash;tamarack swamps to alluvial shrub swamps, and the best examples of common ones. Rare wetlands depend on particular soils, water chemistry and groundwater flow that can't be rebuilt once disturbed, so the aim is avoidance, not careful use. Vermont tracks them through its <a href=\"https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory\" target=\"_blank\" rel=\"noopener\">Natural Heritage Inventory</a>.",
-    "how_built": "Wetlands rated state-significant in Arrowwood Environmental's 2011 town inventory or by the Vermont Natural Heritage Inventory, or of a community type ranked rare or uncommon (S1&ndash;S3) today, buffered 50 ft as the Vermont Wetland Rules do for Class II wetlands. Built by build_wetland_layer.py."
+    "how_built": "Wetlands rated state-significant in Arrowwood Environmental's 2011 town inventory or by the Vermont Natural Heritage Inventory, or of a community type ranked rare or uncommon (S1&ndash;S3) today, buffered 50 ft as the Vermont Wetland Rules do for Class II wetlands."
   },
   "custom_0d7d7d49": {
     "name": "Riparian Connectivity",

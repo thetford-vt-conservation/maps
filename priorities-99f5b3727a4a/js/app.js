@@ -13,7 +13,7 @@
  *
  * Clicking the map opens a popup with the source features behind each layer at
  * that point (a wetland's assessment, a crossing's species, a soil's rating),
- * read from the details-<layer>.geojson files the build writes beside each layer.
+ * read from the details-<layer>.geojson file published beside each layer.
  *
  * Reference overlays (parcels, conserved land...) can be drawn over any view from a
  * Layers button on the map. They are outlines only, so the tier fills stay legible,
@@ -22,8 +22,8 @@
 const App = {
     map: null,
     layer: null,          // the Leaflet layer currently on the map
-    data: null,           // data/layers.json (generated -- rebuilt every time): { maps: [...] }
-    content: null,        // data/content.json (hand-written prose -- never overwritten)
+    data: null,           // data/layers.json: { maps: [...] }
+    content: null,        // data/content.json: the descriptive text
     layersById: {},       // every layer of every map, by rule id
     cache: {},            // geojson by key, fetched once
     selected: null,       // a map id (its tiered view) or a layer id
@@ -38,7 +38,7 @@ const App = {
     CLICK_TOLERANCE_M: 15,
     FEATURES_PER_SOURCE: 3,
 
-    // Outline-only reference layers, borrowed from the main TCC map (tcc-maps).
+    // Outline-only reference layers, loaded live from the state's services.
     // fields name what the click popup shows; nothing else is requested.
     OVERLAYS: [
         {
@@ -144,11 +144,11 @@ const App = {
         this.data = await this.getJSON('data/layers.json');
 
         // Prose is authored separately and overlaid here, so editing descriptions is
-        // a text edit plus a refresh -- no rebuild, and a rebuild can't clobber it.
+        // a text edit plus a refresh.
         try {
             this.content = await this.getJSON('data/content.json');
         } catch (e) {
-            console.warn('content.json not found; using text from the builder', e);
+            console.warn('content.json not found; using the default text', e);
             this.content = {};
         }
         for (const m of this.data.maps) {
@@ -690,7 +690,7 @@ const App = {
 
         if (l.goal) b.push(`<p class="hdr">Goal</p><p>${l.goal}</p>`);
         if (l.motivation) b.push(`<p class="hdr">Why it matters</p><p>${l.motivation}</p>`);
-        // One plain-language line per step, in order (exact codes live in LAYERS.md).
+        // One plain-language line per step, in order.
         const steps = Array.isArray(l.how_built) ? l.how_built : (l.how_built ? [l.how_built] : []);
         if (l.method || steps.length) {
             b.push('<p class="hdr">How it was defined</p>');
