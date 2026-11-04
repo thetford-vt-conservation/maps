@@ -58,6 +58,47 @@
           "features": 10
         },
         {
+          "id": "custom_0cf3cd91",
+          "name": "Endangered and Threatened Species",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "",
+          "motivation": "",
+          "how_built": [
+            "Start with Rare, Threatened & Endangered Species (Natural Heritage), where listed by Vermont",
+            "Add Rare, Threatened & Endangered Species (Natural Heritage), where listed federally"
+          ],
+          "sources": [
+            {
+              "name": "Vermont Fish & Wildlife, Natural Heritage Inventory",
+              "url": "https://vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
+            }
+          ],
+          "acres": 77,
+          "features": 12
+        },
+        {
+          "id": "custom_bb4680ce",
+          "name": "Important Wetlands",
+          "tier": "red",
+          "tier_label": "Highest importance",
+          "color": "#2c7fb8",
+          "goal": "Avoid any development, clearing, filling or drainage in the wetlands Vermont has mapped as state-significant.",
+          "motivation": "Wetlands the town cannot replace: rare types such as the intermediate fen at Gillette Swamp, the wet clayplain forest at Connant Swamp and the sugar maple floodplain forest at Post Mills, plus the best examples of more common ones. Rare wetlands depend on particular soils, water chemistry and groundwater flow that can't be rebuilt once disturbed, so the aim is avoidance, not careful use. Vermont tracks them through its <a href=\"https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory\" target=\"_blank\" rel=\"noopener\">Natural Heritage Inventory</a>.",
+          "how_built": [
+            "Start with State-Significant Wetland Communities (Natural Heritage), buffered 50 ft"
+          ],
+          "sources": [
+            {
+              "name": "Vermont Fish & Wildlife, Natural Heritage Inventory",
+              "url": "https://vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
+            }
+          ],
+          "acres": 206,
+          "features": 11
+        },
+        {
           "id": "custom_0d7d7d49",
           "name": "Riparian Connectivity",
           "tier": "red",
@@ -76,55 +117,6 @@
           ],
           "acres": 4427,
           "features": 686
-        },
-        {
-          "id": "custom_bb4680ce",
-          "name": "Significant Wetlands",
-          "tier": "red",
-          "tier_label": "Highest importance",
-          "color": "#2c7fb8",
-          "goal": "",
-          "motivation": "",
-          "how_built": [
-            "Start with Wetlands (VSWI + Thetford NRI), where protection level is strict, buffered 50 ft"
-          ],
-          "sources": [
-            {
-              "name": "Vermont Significant Wetland Inventory (VT DEC)",
-              "url": "https://dec.vermont.gov/watershed/wetlands/protect/protect"
-            },
-            {
-              "name": "Thetford Natural Resource Inventory / Arrowwood Environmental",
-              "url": "https://www.thetfordvt.gov/government/conservation-commission"
-            },
-            {
-              "name": "VT Natural Heritage Inventory",
-              "url": "https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
-            }
-          ],
-          "acres": 615,
-          "features": 73
-        },
-        {
-          "id": "custom_0cf3cd91",
-          "name": "Threatened Species",
-          "tier": "red",
-          "tier_label": "Highest importance",
-          "color": "#2c7fb8",
-          "goal": "",
-          "motivation": "",
-          "how_built": [
-            "Start with Rare, Threatened & Endangered Species (Natural Heritage), where listed by Vermont",
-            "Add Rare, Threatened & Endangered Species (Natural Heritage), where listed federally"
-          ],
-          "sources": [
-            {
-              "name": "Vermont Fish & Wildlife, Natural Heritage Inventory",
-              "url": "https://vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
-            }
-          ],
-          "acres": 77,
-          "features": 12
         },
         {
           "id": "custom_0a14cdde",
@@ -200,25 +192,21 @@
           "goal": "",
           "motivation": "",
           "how_built": [
-            "Start with Wetlands (VSWI + Thetford NRI), where protection level is caution, buffered 50 ft",
-            "Remove the parts within Wetlands (VSWI + Thetford NRI), where protection level is strict, buffered 50 ft"
+            "Start with Wetlands, buffered 50 ft",
+            "Remove the parts within State-Significant Wetland Communities (Natural Heritage), buffered 50 ft"
           ],
           "sources": [
             {
-              "name": "Vermont Significant Wetland Inventory (VT DEC)",
+              "name": "Vermont Significant Wetlands Inventory (VT DEC)",
               "url": "https://dec.vermont.gov/watershed/wetlands/protect/protect"
             },
             {
-              "name": "Thetford Natural Resource Inventory / Arrowwood Environmental",
-              "url": "https://www.thetfordvt.gov/government/conservation-commission"
-            },
-            {
-              "name": "VT Natural Heritage Inventory",
-              "url": "https://www.vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
+              "name": "Vermont Fish & Wildlife, Natural Heritage Inventory",
+              "url": "https://vtfishandwildlife.com/conserve/conservation-planning/natural-heritage-inventory"
             }
           ],
-          "acres": 3204,
-          "features": 558
+          "acres": 3281,
+          "features": 486
         },
         {
           "id": "custom_79610eba",

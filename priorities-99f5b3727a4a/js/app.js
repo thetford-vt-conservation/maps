@@ -25,7 +25,7 @@ const App = {
     data: null,           // data/layers.json: { maps: [...] }
     content: null,        // data/content.json: the descriptive text
     layersById: {},       // every layer of every map, by rule id
-    layersBySlug: {},     // the same, by the readable name used in links (#significant-wetlands)
+    layersBySlug: {},     // the same, by the readable name used in links (#important-wetlands)
     cache: {},            // geojson by key, fetched once
     selected: null,       // a map id (its tiered view) or a layer id
     mapId: null,          // the map whose layers the panel is listing
@@ -170,6 +170,8 @@ const App = {
                 l.slug = lc.slug || this.slugify(l.name);
                 this.layersById[l.id] = l;
                 this.layersBySlug[l.slug] = l;
+                // Links from before a layer's slug changed still open it.
+                for (const old of lc.old_slugs || []) this.layersBySlug[old] = l;
             }
         }
 
