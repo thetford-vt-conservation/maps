@@ -136,6 +136,7 @@ const App = {
         this.overlayRenderer = new this.ShadedCanvas({ pane: 'overlayRefPane' });
         await this.addTownBoundary();
         this.addOverlayControl();
+        this.initResizer();
         // A click on open ground (no tier there) still reports any overlays.
         this.map.on('click', e => {
             if (this._featureClicked) { this._featureClicked = false; return; }
@@ -459,6 +460,63 @@ const App = {
             }
         }
         return out;
+    },
+
+    /**
+     * Let the side panel be dragged wider or narrower, e.g. to read long notes.
+     * The width is remembered per viewer; storage can be unavailable (private
+     * windows, blocked site data), in which case the panel just starts at default.
+     */
+    initResizer() {
+        const handle = document.getElementById('resizer');
+        const panel = document.getElementById('sidebar');
+        if (!handle || !panel) return;
+        const KEY = 'tcc-priorities-panel-width';
+        const clamp = w => Math.round(Math.min(Math.max(w, 220), Math.min(760, window.innerWidth * 0.7)));
+        let frame = null;
+        const apply = (w, save) => {
+            if (w === null) {
+                panel.style.width = panel.style.flexBasis = '';
+            } else {
+                w = clamp(w);
+                panel.style.width = panel.style.flexBasis = w + 'px';
+            }
+            // Leaflet must re-measure, or tiles and clicks are offset after a resize.
+            if (!frame) frame = requestAnimationFrame(() => { frame = null; this.map.invalidateSize({ pan: false }); });
+            if (save) {
+                try { w === null ? localStorage.removeItem(KEY) : localStorage.setItem(KEY, String(w)); } catch (e) { /* not remembered */ }
+            }
+        };
+        try { const w = parseInt(localStorage.getItem(KEY), 10); if (w) apply(w, false); } catch (e) { /* default width */ }
+
+        handle.addEventListener('pointerdown', e => {
+            e.preventDefault();
+            handle.setPointerCapture(e.pointerId);
+            handle.classList.add('dragging');
+            document.body.classList.add('resizing');
+            const left = panel.getBoundingClientRect().left;
+            const move = ev => apply(ev.clientX - left, false);
+            const up = ev => {
+                handle.removeEventListener('pointermove', move);
+                handle.removeEventListener('pointerup', up);
+                handle.classList.remove('dragging');
+                document.body.classList.remove('resizing');
+                apply(ev.clientX - left, true);
+            };
+            handle.addEventListener('pointermove', move);
+            handle.addEventListener('pointerup', up);
+        });
+        handle.addEventListener('dblclick', () => apply(null, true));
+        handle.addEventListener('keydown', e => {
+            const step = e.shiftKey ? 60 : 20;
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                apply(panel.getBoundingClientRect().width + (e.key === 'ArrowRight' ? step : -step), true);
+            }
+        });
+        window.addEventListener('resize', () => {
+            if (panel.style.width) apply(parseInt(panel.style.width, 10), false);
+        });
     },
 
     /** The Layers button: a collapsed control on the map that switches overlays. */

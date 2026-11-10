@@ -41,6 +41,24 @@ html, body {
 
 /* ---------- the margin: title, index, notes ---------- */
 
+/* Drag handle on the margin's edge. It overlaps the hairline rather than adding a
+   gutter, and only shows itself on hover, focus or while dragging. */
+.resizer {
+    flex: 0 0 8px;
+    margin: 0 -4px;
+    position: relative;
+    z-index: 1100;
+    cursor: col-resize;
+    touch-action: none;
+}
+.resizer::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 3px; width: 2px;
+    background: transparent; transition: background .15s;
+}
+.resizer:hover::after, .resizer:focus-visible::after, .resizer.dragging::after { background: var(--ink-faint); }
+.resizer:focus { outline: none; }
+body.resizing { cursor: col-resize; user-select: none; }
+
 .margin {
     width: var(--margin-width);
     flex: 0 0 var(--margin-width);

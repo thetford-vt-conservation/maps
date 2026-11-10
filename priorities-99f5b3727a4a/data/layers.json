@@ -30,7 +30,7 @@
           ],
           "sources": [
             {
-              "name": "Thetford Natural Resource Inventory",
+              "name": "Thetford Wildlife Road Crossing Study (2025)",
               "url": "https://www.thetfordvt.gov/government/conservation-commission"
             }
           ],
@@ -127,21 +127,22 @@
           "goal": "",
           "motivation": "",
           "how_built": [
-            "Start with Forest Connectivity Blocks, where priority is highest",
-            "Keep only the parts within Wildlife Road Crossings, where overall connectivity is well above average, above average or average, buffered 100 ft"
+            "Start with Wildlife Road Crossings, where road section is regionally important or locally important and overall connectivity is well above average or above average",
+            "Keep each whole feature that comes within 100 ft of Forest Connectivity Blocks, where priority is highest or priority",
+            "Buffer the result 100 ft"
           ],
           "sources": [
             {
-              "name": "Vermont Agency of Natural Resources",
-              "url": "https://anr.vermont.gov/"
+              "name": "Thetford Wildlife Road Crossing Study (2025)",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
             },
             {
-              "name": "Thetford Natural Resource Inventory",
-              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+              "name": "Vermont Agency of Natural Resources",
+              "url": "https://anr.vermont.gov/"
             }
           ],
-          "acres": 128,
-          "features": 71
+          "acres": 191,
+          "features": 28
         },
         {
           "id": "custom_77a73964",
@@ -172,7 +173,7 @@
           "goal": "",
           "motivation": "",
           "how_built": [
-            "Start with Rare, Threatened & Endangered Species (Natural Heritage), where listed by Vermont is not listed by Vermont and listed federally is not listed federally"
+            "Start with Rare, Threatened & Endangered Species (Natural Heritage), where not listed by Vermont and not listed federally"
           ],
           "sources": [
             {
@@ -192,7 +193,7 @@
           "goal": "",
           "motivation": "",
           "how_built": [
-            "Start with Wetlands, buffered 50 ft",
+            "Start with Vermont Significant Wetlands Inventory, buffered 50 ft",
             "Remove the parts within State-Significant Wetland Communities (Natural Heritage), buffered 50 ft"
           ],
           "sources": [
@@ -209,6 +210,53 @@
           "features": 486
         },
         {
+          "id": "custom_d324ef92",
+          "name": "Second Tier Crossings",
+          "tier": "yellow",
+          "tier_label": "Medium importance",
+          "color": "#7fcdbb",
+          "goal": "Keep the town's remaining road crossings permeable where habitat continues on both sides.",
+          "motivation": "The full set of wildlife crossings identified in the town inventory. Crossings that also fall inside the regional connectivity network appear in the top tier as well, and the map shows each area at its highest tier. Individually lower stakes, but collectively they are what keeps the town permeable at a local scale by letting animals reach feeding, breeding and overwintering habitat within Thetford rather than only through it. From the <a href=\"https://www.thetfordvt.gov/government/conservation-commission\" target=\"_blank\" rel=\"noopener\">2025 Thetford wildlife road crossing study</a>.",
+          "how_built": [
+            "Start with Wildlife Road Crossings, where road section is regionally important or locally important and overall connectivity is average",
+            "Add Wildlife Road Crossings, where road section is potentially regionally important and overall connectivity is well above average or above average",
+            "Keep each whole feature that comes within 100 ft of Forest Connectivity Blocks, where priority is highest or priority",
+            "Buffer the result 100 ft"
+          ],
+          "sources": [
+            {
+              "name": "Thetford Wildlife Road Crossing Study (2025)",
+              "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            },
+            {
+              "name": "Vermont Agency of Natural Resources",
+              "url": "https://anr.vermont.gov/"
+            }
+          ],
+          "acres": 78,
+          "features": 18
+        },
+        {
+          "id": "custom_49576c00",
+          "name": "Deer Wintering Areas",
+          "tier": "green",
+          "tier_label": "Important",
+          "color": "#edf8b1",
+          "goal": "Keep the softwood cover that deer depend on in winter intact and connected.",
+          "motivation": "Deer wintering areas are the patches of dense softwood (hemlock, balsam fir, red spruce or white pine) where white-tailed deer gather when snow is deep. Near the northern edge of the species' range, these yards decide whether deer get through hard winters, so Vermont treats them as important wildlife habitat under Act 250 and other regulations. Losing the softwood canopy, or cutting the travel lanes between yards, can make an area useless for wintering deer for decades (<a href=\"https://vtfishandwildlife.com/sites/fishandwildlife/files/documents/Learn%20More/LandownersGuide/8.Deer_.pdf\" target=\"_blank\" rel=\"noopener\">VT Fish &amp; Wildlife, Deer Wintering Areas</a>).",
+          "how_built": [
+            "Start with Deer Wintering Areas"
+          ],
+          "sources": [
+            {
+              "name": "VT Agency of Natural Resources",
+              "url": "https://anr.vermont.gov/"
+            }
+          ],
+          "acres": 5864,
+          "features": 12
+        },
+        {
           "id": "custom_79610eba",
           "name": "Priority Connectivity Blocks",
           "tier": "green",
@@ -217,7 +265,7 @@
           "goal": "",
           "motivation": "",
           "how_built": [
-            "Start with Forest Connectivity Blocks, where priority is priority"
+            "Start with Forest Connectivity Blocks, where priority"
           ],
           "sources": [
             {
@@ -229,24 +277,31 @@
           "features": 6
         },
         {
-          "id": "custom_d324ef92",
-          "name": "Second Tier Crossings",
+          "id": "custom_d2593f87",
+          "name": "Third Tier Crossings",
           "tier": "green",
           "tier_label": "Important",
           "color": "#edf8b1",
           "goal": "",
           "motivation": "",
           "how_built": [
-            "Start with Wildlife Road Crossings, where overall connectivity is well above average, above average or average, buffered 50 ft"
+            "Start with Wildlife Road Crossings, where road section is regionally important or locally important and overall connectivity is below average",
+            "Add Wildlife Road Crossings, where road section is potentially regionally important and overall connectivity is average",
+            "Keep each whole feature that comes within 100 ft of Forest Connectivity Blocks, where priority is highest or priority",
+            "Buffer the result 100 ft"
           ],
           "sources": [
             {
-              "name": "Thetford Natural Resource Inventory",
+              "name": "Thetford Wildlife Road Crossing Study (2025)",
               "url": "https://www.thetfordvt.gov/government/conservation-commission"
+            },
+            {
+              "name": "Vermont Agency of Natural Resources",
+              "url": "https://anr.vermont.gov/"
             }
           ],
-          "acres": 201,
-          "features": 82
+          "acres": 36,
+          "features": 13
         },
         {
           "id": "custom_485e642b",
